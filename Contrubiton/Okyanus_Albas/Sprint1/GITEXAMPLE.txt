@@ -1,0 +1,11 @@
+#git init
+#git add . #For everyfile or git add filename.txt
+#git commit -m "Example"
+
+#git push -u origin main #if done before use #git push 
+
+
+
+#if errors there is changes made in remote repo #git pull --rebase origin main 
+
+then push again
