@@ -2,7 +2,7 @@ Contribution 1 - emailed client to clarify requirements on Thursday 20/11/2025
 
 Contribution 2 - Thursday 20/11/2025 created potential structure for the Android app project using Gemini AI, broke them down into phases 
 (meaniang tasks that must go in parallel) and roles (e.g., developer, UI, app logic) and added cards on Trello. 
-Asked the team for a feedback - feedback was not recieved during 4 days.
-Team deleted my work by removing Trello headers with roles and phases without letting me know and I have not my work saved now, which I had spend time on. 
-
+Asked the team for a feedback - feedback was not recieved during 4 days. Also, drafted more delailed AI Prompts templates everyone can use (only if want to) for different tasks.
+ - Team deleted my work by removing Trello headers with roles and phases without letting me know and I have not my work saved now.
 Contribution 3 - Drafted detailed potential usage of AWS services for our project and how it alignes with the app logic.
+Contribution 4 - made consise notes on the client meeting so it is saved in one file.
