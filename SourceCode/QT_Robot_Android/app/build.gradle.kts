@@ -36,7 +36,19 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Room Database (Kotlin DSL format)
+    val roomVersion = "2.8.4"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    // Lifecycle & LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-core:2.10.0")
 }
