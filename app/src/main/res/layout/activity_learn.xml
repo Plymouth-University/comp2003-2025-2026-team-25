@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".LearnActivity">
+
+    <ImageButton
+        android:id="@+id/go_back_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/solid_blue_rounded"
+        android:contentDescription="@string/go_back_button"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        app:tint="@android:color/white"
+        android:src="@drawable/go_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/what_to_expect_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/what_to_expect"
+        android:textColor="#2196F3"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/arrival_button"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_pale_blue_black_border"
+        android:text="@string/learn_arrival"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/before_appt_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/what_to_expect_label"
+        app:layout_constraintVertical_chainStyle="spread" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/before_appt_button"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_pale_blue_black_border"
+        android:text="@string/learn_before_appt"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/during_appt_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/arrival_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/during_appt_button"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_pale_blue_black_border"
+        android:text="@string/learn_during_appt"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/after_appt_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/before_appt_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/after_appt_button"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_pale_blue_black_border"
+        android:text="@string/learn_after_appt"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/during_appt_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".SettingsActivity">
+
+    <ImageButton
+        android:id="@+id/go_back_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/solid_blue_rounded"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        app:tint="@android:color/white"
+        android:src="@drawable/go_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settings_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Settings_label"
+        android:textColor="#4F9DC2"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/go_back_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/go_back_button" />
+
+    <ImageView
+        android:id="@+id/qt_image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/qtrobot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_label" />
+
+    <TextView
+        android:id="@+id/notification_preferences_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:text="@string/notification_preferences_title"
+        android:textColor="#4F9DC2"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/qt_image" />
+
+    <TextView
+        android:id="@+id/reminders_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/reminders_label"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/reminders_switch"
+        app:layout_constraintStart_toStartOf="@+id/notification_preferences_title"
+        app:layout_constraintTop_toBottomOf="@+id/notification_preferences_title" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/reminders_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        app:thumbTint="#4F9DC2"
+        app:trackTint="#4F9DC2"
+        app:layout_constraintBottom_toBottomOf="@+id/reminders_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reminders_label" />
+
+    <TextView
+        android:id="@+id/streak_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/streak_label"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/streak_switch"
+        app:layout_constraintStart_toStartOf="@+id/reminders_label"
+        app:layout_constraintTop_toBottomOf="@+id/reminders_label" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/streak_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        app:thumbTint="#4F9DC2"
+        app:trackTint="#4F9DC2"
+        app:layout_constraintBottom_toBottomOf="@+id/streak_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/streak_label" />
+
+    <TextView
+        android:id="@+id/appointments_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/appointments_label"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/appointments_switch"
+        app:layout_constraintStart_toStartOf="@+id/streak_label"
+        app:layout_constraintTop_toBottomOf="@+id/streak_label" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/appointments_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        app:thumbTint="#4F9DC2"
+        app:trackTint="#4F9DC2"
+        app:layout_constraintBottom_toBottomOf="@+id/appointments_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/appointments_label" />
+
+    <Button
+        android:id="@+id/add_child_profile_button"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#4F9DC2"
+        android:text="@string/add_child_profile_button"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#4F9DC2"
+        android:text="@string/sign_out_button"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
