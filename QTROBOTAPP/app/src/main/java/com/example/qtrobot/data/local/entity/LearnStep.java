@@ -1,4 +1,4 @@
-package com.example.qtrobot.data;
+package com.example.qtrobot.data.local.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -21,10 +21,10 @@ public class LearnStep {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    @ColumnInfo(name = "section_id")
+    @ColumnInfo(name = "section_id") //eg, ARRIVAL, BEFORE, DURING, AFTER
     public long sectionId;
 
-    public int order;  // step order in sequence
+    public int order;  // step order in sequence, eg. 1,2,3,...
 
     public String title;
 
