@@ -17,7 +17,7 @@ import com.example.qtrobot.data.local.database.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    //-- Room DB declarations --
+    //-- Room DB declarations block starts here --
     private AppDatabase db;
     private ParentAccountDao parentAccountDao;
     private ChildProfileDao childProfileDao;
@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
             // this will just touch the DB so it’s created
             dao.getSingleParent();
         });
+
+        // -- Room DB integration ends here --
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
