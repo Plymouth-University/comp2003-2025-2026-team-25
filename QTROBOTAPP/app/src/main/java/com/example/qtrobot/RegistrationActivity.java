@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qtrobot.data.local.entity.ParentAccount;
 import com.example.qtrobot.data.repository.DataRepository;
+import com.example.qtrobot.data.repository.OnParentIdCallBack;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -92,16 +93,24 @@ public class RegistrationActivity extends AppCompatActivity {
         newParent.isDirty = true; //not yet synced to cloud
 
         // Calls the Repository to insert the new parent account on the background thread
-        dataRepository.insertParent(newParent);
+        dataRepository.insertParent(newParent, new OnParentIdCallBack() {
+            @Override
+            public void onParentIdReceived(long parentId) {
+                // This code runs AFTER the parent is inserted and we have the ID
+                Toast.makeText(RegistrationActivity.this, "Parent Registration Successful!", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, "Parent Registration Successful!", Toast.LENGTH_SHORT).show();
+                // Navigate to the NewProfileActivity to complete child's profile
+                Intent intent = new Intent(RegistrationActivity.this, NewProfileActivity.class);
+                intent.putExtra("PARENT_ID", parentId); // Pass the ID of parent to the child profile registration screen
+                startActivity(intent);
 
-        // Navigate to the NewProfileActivity to complete child's profile
-        Intent intent = new Intent(RegistrationActivity.this, NewProfileActivity.class);
-        startActivity(intent);
+                // finish the current activity
+                finish();
 
-        // finish the current activity
-        finish();
+            }
+        });
+
+
 
 
     }

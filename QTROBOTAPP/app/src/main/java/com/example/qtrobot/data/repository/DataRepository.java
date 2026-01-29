@@ -1,6 +1,8 @@
 package com.example.qtrobot.data.repository;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.qtrobot.data.local.dao.ChildProfileDao;
@@ -8,6 +10,9 @@ import com.example.qtrobot.data.local.dao.ParentAccountDao;
 import com.example.qtrobot.data.local.database.AppDatabase;
 import com.example.qtrobot.data.local.entity.ChildProfile;
 import com.example.qtrobot.data.local.entity.ParentAccount;
+
+import com.example.qtrobot.data.repository.OnParentIdCallBack;
+
 
 // code reference: https://stackoverflow.com/questions/64017799/how-to-use-executorservice-with-android-room
 
@@ -27,12 +32,15 @@ public class DataRepository {
     }
 
     // --- ParentAccount Methods ---
-    public void insertParent(ParentAccount parentAccount) {
+    public void insertParent(ParentAccount parentAccount, OnParentIdCallBack callback) {
         // Using existing background thread executor from our AppDatabase class
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if(parentAccount!=null)
             {
-                parentAccountDao.insertParent(parentAccount);
+                long newParentId = parentAccountDao.insertParent(parentAccount);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    callback.onParentIdReceived(newParentId);
+                });
             }
             else {
                 Log.e("DataRepository","parentAccount is null");

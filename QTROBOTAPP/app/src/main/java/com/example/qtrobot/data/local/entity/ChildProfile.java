@@ -37,6 +37,9 @@ public class ChildProfile {
     @ColumnInfo(name = "avatar_uri")  // uri = link to the resource
     public String avatarUri;    // e.g. "content://app/avatars/bunny.png" or "res://avatar_boy"
 
+    @ColumnInfo(name = "score", defaultValue = "0")
+    public int score; // Total score earned by the child
+
     @ColumnInfo(name = "created_at")
     public long createdAt;
 

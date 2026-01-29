@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
         entities = {
                 ParentAccount.class,
                 ChildProfile.class
-        }, version = 1, exportSchema = false)
+        }, version = 2, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -47,6 +47,8 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "qtrobot.db"   // database file name
                             )
+                            // temporary to change the version of db, not great for production
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
