@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # Our Python Backend Service
+  backend:
+    build: .  # Build the image from the Dockerfile in the current directory
+    container_name: qtrobot-backend-container
+    ports:
+      - "8000:8000"  # Map port 8000 on your machine to port 8000 in the container
+    volumes:
+      - .:/app  # This mounts the current directory into the container, so code changes are reflected instantly
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Keycloak Authentication Service
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: qtrobot-keycloak-container
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"  # Map port 8080 for the Keycloak UI
+    command: start-dev

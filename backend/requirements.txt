@@ -1,2 +1,58 @@
+# =========================================
+# QTrobot Backend – Python Dependencies
+# =========================================
+
+# -----------------------------
+# Web framework & API server
+# -----------------------------
 fastapi
-uvicorn
+# FastAPI is used to build a high-performance REST API that allows
+# the Android (Java) application to communicate with the backend.
+
+uvicorn[standard]
+# Uvicorn is an ASGI server used to run the FastAPI application.
+# The "standard" extras enable production-ready features.
+
+# -----------------------------
+# Data validation & modelling
+# -----------------------------
+pydantic
+# Pydantic provides data validation and parsing for incoming JSON
+# requests and outgoing responses.
+
+# -----------------------------
+# External HTTP communication
+# -----------------------------
+requests
+# Used for making HTTP requests to external services such as
+# AI APIs or cloud-based services (if required in future).
+
+# -----------------------------
+# Configuration management
+# -----------------------------
+python-dotenv
+# Loads environment variables from a .env file, allowing sensitive
+# configuration (API keys, IP addresses) to be kept out of source code.
+
+# -----------------------------
+# Asynchronous utilities
+# -----------------------------
+anyio
+# Async compatibility layer used internally by FastAPI to support
+# asynchronous request handling.
+
+# -----------------------------
+# Caching & optimisation
+# -----------------------------
+cachetools
+# Lightweight in-memory caching to reduce repeated processing
+# and improve response performance.
+
+# -----------------------------
+# Testing & quality assurance
+# -----------------------------
+pytest
+# Framework for writing unit tests for backend logic.
+
+httpx
+# HTTP client used for testing FastAPI endpoints during development.
