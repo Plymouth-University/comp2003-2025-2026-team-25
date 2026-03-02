@@ -5,32 +5,47 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    tools:context=".MainActivity">
+    android:background="@drawable/page_border_background"
+    tools:context=".HomeActivity">
 
     <ImageButton
         android:id="@+id/upcoming_appointment_top"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/solid_blue_rounded"
         android:scaleType="fitCenter"
-        android:padding="20dp"
+        android:padding="16dp"
         app:tint="@android:color/white"
         android:src="@drawable/upcoming_appoint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        android:id="@+id/qr_code_button"
+        android:layout_width="88dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/solid_blue_rounded"
+        android:contentDescription="Open QR Code Page"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/qr_code_page_icon"
+        app:layout_constraintEnd_toStartOf="@+id/app_settings_top"
+        app:layout_constraintStart_toEndOf="@+id/upcoming_appointment_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+    <ImageButton
         android:id="@+id/app_settings_top"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/solid_blue_rounded"
         android:scaleType="fitCenter"
-        android:padding="20dp"
+        android:padding="16dp"
         app:tint="@android:color/white"
         android:src="@drawable/app_settings"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +62,7 @@
         app:layout_constraintBottom_toTopOf="@+id/dentist_helper_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upcoming_appointment_top" />
+        app:layout_constraintTop_toBottomOf="@+id/qr_code_button" />
 
     <TextView
         android:id="@+id/dentist_helper_label"
@@ -73,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:text="@string/qtrobot_title"
-        android:textColor="#4F9DC2"
+        android:textColor="#2196F3"
         android:textSize="55sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_manual"

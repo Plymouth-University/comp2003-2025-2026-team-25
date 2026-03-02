@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class BrushTimerActivity extends AppCompatActivity {
     private TextView titleText;
     private Button startTimerButton;
     private FrameLayout bubbleContainer;
-    private Handler bubbleHandler = new Handler();
+    private final Handler bubbleHandler = new Handler(Looper.getMainLooper());
 
     private CountDownTimer countDownTimer;
     private boolean timerRunning;
@@ -45,24 +46,33 @@ public class BrushTimerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_brushtimer);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(v -> finish());
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(v -> finish());
+        }
 
         timerText = findViewById(R.id.timer_text);
         titleText = findViewById(R.id.brush_teeth_title);
         startTimerButton = findViewById(R.id.start_timer_button);
         bubbleContainer = findViewById(R.id.bubble_container);
 
-        startTimerButton.setText("Start Brushing");
-        startTimerButton.setOnClickListener(v -> startTimer());
+        if (startTimerButton != null) {
+            startTimerButton.setText("Start Brushing");
+            startTimerButton.setOnClickListener(v -> startTimer());
+        }
         updateCountDownText();
         playSound(R.raw.press_the_button_when_ready);
-        bubbleContainer.post(this::startBubbleAnimation);
+        if (bubbleContainer != null) {
+            bubbleContainer.post(this::startBubbleAnimation);
+        }
     }
+
     private void startTimer() {
         if (timerRunning) return;
 
         playSound(R.raw.brush_teeth_together);
-        startTimerButton.setVisibility(View.GONE);
+        if (startTimerButton != null) {
+            startTimerButton.setVisibility(View.GONE);
+        }
 
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
@@ -75,8 +85,12 @@ public class BrushTimerActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerRunning = false;
-                titleText.setText("You did it! Well done!");
-                timerText.setText("00:00");
+                if (titleText != null) {
+                    titleText.setText("You did it! Well done!");
+                }
+                if (timerText != null) {
+                    timerText.setText("00:00");
+                }
             }
         }.start();
 
@@ -87,21 +101,22 @@ public class BrushTimerActivity extends AppCompatActivity {
         long secondsLeft = Math.round(millisUntilFinished / 1000.0);
 
         if (secondsLeft == 90 && !cue90Played) {
-            titleText.setText("Well done, keep it up!");
+            if (titleText != null) titleText.setText("Well done, keep it up!");
             playSound(R.raw.well_done_keep_it_up);
             cue90Played = true;
         } else if (secondsLeft == 60 && !cue60Played) {
-            titleText.setText("You are halfway there!");
+            if (titleText != null) titleText.setText("You are halfway there!");
             playSound(R.raw.you_are_halfway_there);
             cue60Played = true;
         } else if (secondsLeft == 30 && !cue30Played) {
-            titleText.setText("Nearly done!");
+            if (titleText != null) titleText.setText("Nearly done!");
             playSound(R.raw.nearly_done);
             cue30Played = true;
         }
     }
 
     private void updateCountDownText() {
+        if (timerText == null) return;
         int minutes = (int) (timeLeftInMillis / 1000) / 60;
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
         String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
@@ -149,6 +164,7 @@ public class BrushTimerActivity extends AppCompatActivity {
     }
 
     private void createBubble() {
+        if (bubbleContainer == null) return;
         int containerWidth = bubbleContainer.getWidth();
         int containerHeight = bubbleContainer.getHeight();
         if (containerWidth <= 0 || containerHeight <= 0) return;
@@ -187,5 +203,8 @@ public class BrushTimerActivity extends AppCompatActivity {
         super.onDestroy();
         bubbleHandler.removeCallbacksAndMessages(null);
         stopSound();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }

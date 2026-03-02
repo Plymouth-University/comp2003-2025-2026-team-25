@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/page_border_background"
     tools:context=".BrushTimerActivity">
 
     <ImageView
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="@string/brush_teeth_title"
-        android:textColor="@android:color/black"
+        android:textColor="#2196F3"
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="24dp"
         android:text="Start"
-        android:backgroundTint="#4F9DC2"
+        android:backgroundTint="#2196F3"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.447"

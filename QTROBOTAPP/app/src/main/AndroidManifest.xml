@@ -38,6 +38,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".QrScanPage"
+            android:exported="false" />
+
+        <activity
             android:name=".AppointmentsActivity"
             android:exported="false" />
 
