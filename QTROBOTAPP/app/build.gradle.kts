@@ -4,14 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.qtrobot"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.qtrobot"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -43,11 +41,14 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // Room DB (Kotlin DSL format)
-    val roomVersion = "2.8.4"
-
+    // Room DB
+    val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    
     // Lifecycle & LiveData
-    implementation("androidx.lifecycle:lifecycle-livedata-core:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-core:2.8.7")
+
+    // ZXing for QR Code generation
+    implementation(libs.zxing)
 }

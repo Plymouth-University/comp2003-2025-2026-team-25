@@ -14,6 +14,18 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Replace QR Image with QR Code Button
+        ImageButton qrCodeButton = findViewById(R.id.qr_code_button);
+        if (qrCodeButton != null) {
+            qrCodeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(HomeActivity.this, QrScanPage.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
         ImageButton upcomingApptTop = findViewById(R.id.upcoming_appointment_top);
         if (upcomingApptTop != null) {
             upcomingApptTop.setOnClickListener(new View.OnClickListener() {
@@ -36,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
 
-        // Bottom Left: Learn
+        // Bottom Navigation Buttons
         ImageButton learnButton = findViewById(R.id.navigation_learn);
         if (learnButton != null) {
             learnButton.setOnClickListener(new View.OnClickListener() {
