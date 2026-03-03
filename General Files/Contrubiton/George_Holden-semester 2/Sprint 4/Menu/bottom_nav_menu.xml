@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_educate"
+        android:icon="@drawable/qtrobot_learn"
+        android:title="Learn Space" />
+
+    <item
+        android:id="@+id/navigation_dailybrush"
+        android:icon="@drawable/dailybrush"
+        android:title="Daily Brush Streak" />
+
+    <item
+        android:id="@+id/navigation_BrushTimer"
+        android:icon="@drawable/toothbrush"
+        android:title="Brush Timer" />
+
+</menu>

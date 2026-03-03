@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_border_background"
+    android:padding="24dp"
+    tools:context=".QrScanPage">
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/solid_blue_rounded"
+        android:contentDescription="Go Back"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/go_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/qr_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Scan to Connect"
+        android:textColor="#2196F3"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_button" />
+
+    <ImageView
+        android:id="@+id/large_qr_code"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="Large QR Code"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qr_title" />
+
+    <TextView
+        android:id="@+id/timer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="QR Code will expire in:"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/large_qr_code" />
+
+    <TextView
+        android:id="@+id/countdown_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="05:00"
+        android:textColor="@android:color/black"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timer_label" />
+
+    <TextView
+        android:id="@+id/expiry_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QR code expired"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/countdown_timer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/countdown_timer" />
+
+    <ImageView
+        android:id="@+id/qtrobot_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="QTrobot"
+        android:scaleType="fitCenter"
+        android:src="@drawable/qtrobot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countdown_timer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
