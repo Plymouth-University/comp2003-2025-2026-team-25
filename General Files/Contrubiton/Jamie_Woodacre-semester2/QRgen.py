@@ -1,31 +1,18 @@
-#QR code generator for the QT Robot
 import qrcode
 import hmac
 import hashlib
-import time
 
-#used to encrypt 
-User_key_string = 'testString'
+
+SECRET_KEY = b'testString' 
 
 def generateQR(user_id: str):
-
-    timestamp = str(int(time.time()))
-    dataforQR = f"{user_id}:{timestamp}"
-    authkey = hmac.new(User_key_string.encode(), dataforQR.encode(), hashlib.sha256).hexdigest()
-    QRvalue = f"{user_id}.{timestamp}.{authkey[:10]}"
-    code = qrcode.make(QRvalue)
-    code.save(f"{user_id}_QR-code.png")
-    
-    return QRvalue
-
-#test
-generateQR("testUser")
-
-
-#dependencies for this script to work: qrcode, pillow, hmac, hashlib, time
-#to do: update the QR script and definition of the user_id to allow alphanumeric compatibility --> DONE
-
-#feedback received : just using user id is insecure -change it 
-# needs to include a unique key, needs to expire and needs to be live for robot to verify --> Mostly done
-
-#new todo: functionality with database, robot and application
+    signature = hmac.new(SECRET_KEY, user_id.encode(), hashlib.sha256).hexdigest()
+    short_sig = signature[:10]
+    qr_data = f"{user_id}:{short_sig}"
+    qr = qrcode.QRCode(box_size=10, border=4)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(f"user_{user_id}_qr.png")
+    print(f"Generated QR for {user_id} with data: {qr_data}")
+    return qr_data
