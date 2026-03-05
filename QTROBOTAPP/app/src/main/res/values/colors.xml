@@ -3,4 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary_blue">#2196F3</color>
+    <color name="container_blue">#B3E5FC</color>
+    <color name="primary_pink">#FAD1DC</color>
+    <color name="container_pink">#FCE4EC</color>
+    <color name="on_primary_pink">#880E4F</color> <!-- Dark pink for readability -->
 </resources>

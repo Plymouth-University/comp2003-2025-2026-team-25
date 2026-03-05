@@ -3,6 +3,7 @@ package com.example.qtrobot;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,12 +17,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Locale;
 import java.util.Random;
 
-public class BrushTimerActivity extends AppCompatActivity {
+public class BrushTimerActivity extends BaseActivity {
 
     private static final long START_TIME_IN_MILLIS = 120000; // 2 minutes
 
@@ -45,6 +44,10 @@ public class BrushTimerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_brushtimer);
 
+        // Apply robot image theme
+        ImageView robotImage = findViewById(R.id.qtrobot_image);
+        RobotImageHelper.applyRobot(robotImage, this);
+
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) {
             goBackButton.setOnClickListener(v -> finish());
@@ -56,7 +59,6 @@ public class BrushTimerActivity extends AppCompatActivity {
         bubbleContainer = findViewById(R.id.bubble_container);
 
         if (startTimerButton != null) {
-            startTimerButton.setText("Start Brushing");
             startTimerButton.setOnClickListener(v -> startTimer());
         }
         updateCountDownText();
@@ -171,6 +173,14 @@ public class BrushTimerActivity extends AppCompatActivity {
 
         ImageView bubble = new ImageView(this);
         bubble.setImageResource(R.drawable.bubble);
+        
+        // Tint bubbles based on theme
+        if (ThemePrefs.isPinkTheme(this)) {
+            bubble.setColorFilter(0xFFFAD1DC, PorterDuff.Mode.SRC_IN);
+        } else {
+            bubble.setColorFilter(0xFF2196F3, PorterDuff.Mode.SRC_IN);
+        }
+
         Random random = new Random();
         int size = random.nextInt(100) + 50;
         int maxLeft = containerWidth - size;

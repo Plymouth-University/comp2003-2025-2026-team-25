@@ -1,15 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.QTrobot" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/primary_blue</item>
-        <!-- White icons for the blue status bar -->
-        <item name="android:windowLightStatusBar">false</item>
-        
-        <item name="colorPrimary">@color/primary_blue</item>
-        <item name="colorPrimaryVariant">@color/primary_blue</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:statusBarColor">?attr/qtPrimary</item>
+        <item name="colorPrimary">?attr/qtPrimary</item>
+        <item name="colorOnPrimary">?attr/qtOnPrimary</item>
+        <item name="colorPrimaryContainer">?attr/qtContainer</item>
     </style>
 
-    <style name="Theme.QTrobot" parent="Base.Theme.QTrobot" />
+    <style name="Theme_App_Blue" parent="Base.Theme.QTrobot">
+        <item name="qtPrimary">@color/primary_blue</item>
+        <item name="qtContainer">@color/container_blue</item>
+        <item name="qtOnPrimary">@color/white</item>
+        <item name="qtCardBackground">@color/primary_blue</item>
+        <item name="qtAccent">@color/primary_blue</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme_App_Pink" parent="Base.Theme.QTrobot">
+        <item name="qtPrimary">@color/primary_pink</item>
+        <item name="qtContainer">@color/container_pink</item>
+        <item name="qtOnPrimary">@color/on_primary_pink</item>
+        <item name="qtCardBackground">@color/primary_pink</item>
+        <item name="qtAccent">@color/primary_pink</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.QTrobot" parent="Theme_App_Blue" />
 </resources>

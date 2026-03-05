@@ -2,13 +2,12 @@ package com.example.qtrobot;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DuringAppointmentActivity extends AppCompatActivity {
+public class DuringAppointmentActivity extends BaseActivity {
 
     private MediaPlayer mediaPlayer;
 
@@ -18,7 +17,9 @@ public class DuringAppointmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_during_appointment);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(v -> finish());
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(v -> finish());
+        }
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         
@@ -28,28 +29,30 @@ public class DuringAppointmentActivity extends AppCompatActivity {
         cards.add(new CardModel("Checking Teeth", "The dentist will count your teeth and make sure they're strong.", R.drawable.qt_getting_teeth_count));
 
         CardAdapter adapter = new CardAdapter(cards);
-        viewPager.setAdapter(adapter);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
 
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                switch (position) {
-                    case 0:
-                        playSound(R.raw.dentist_will_explain_before_begin);
-                        break;
-                    case 1:
-                        playSound(R.raw.during_visit_you_sit_comfortably_in_dentists_chair);
-                        break;
-                    case 2:
-                        playSound(R.raw.comfort_are_priority);
-                        break;
-                    default:
-                        stopSound();
-                        break;
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    switch (position) {
+                        case 0:
+                            playSound(R.raw.dentist_will_explain_before_begin);
+                            break;
+                        case 1:
+                            playSound(R.raw.during_visit_you_sit_comfortably_in_dentists_chair);
+                            break;
+                        case 2:
+                            playSound(R.raw.comfort_are_priority);
+                            break;
+                        default:
+                            stopSound();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void playSound(int resId) {

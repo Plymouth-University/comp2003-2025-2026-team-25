@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="48dp"
         android:text="@string/qtrobot_title"
-        android:textColor="#2196F3"
+        android:textColor="?attr/qtPrimary"
         android:textSize="55sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_manual"

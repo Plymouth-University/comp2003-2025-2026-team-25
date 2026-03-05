@@ -2,13 +2,12 @@ package com.example.qtrobot;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrivalActivity extends AppCompatActivity {
+public class ArrivalActivity extends BaseActivity {
 
     private MediaPlayer mediaPlayer;
 
@@ -18,7 +17,9 @@ public class ArrivalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_arrival);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(v -> finish());
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(v -> finish());
+        }
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         
@@ -27,26 +28,27 @@ public class ArrivalActivity extends AppCompatActivity {
         cards.add(new CardModel("Checking In", "You may wait for a short time before your appointment begins", R.drawable.qt_waiting_room));
 
         CardAdapter adapter = new CardAdapter(cards);
-        viewPager.setAdapter(adapter);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
 
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                switch (position) {
-                    case 0:
-                        playSound(R.raw.when_you_arrive_at_clinic);
-                        break;
-                    case 1:
-                        playSound(R.raw.might_wait_for_short_time);
-                        break;
-                    default:
-                        stopSound();
-                        break;
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    switch (position) {
+                        case 0:
+                            playSound(R.raw.when_you_arrive_at_clinic);
+                            break;
+                        case 1:
+                            playSound(R.raw.might_wait_for_short_time);
+                            break;
+                        default:
+                            stopSound();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void playSound(int resId) {

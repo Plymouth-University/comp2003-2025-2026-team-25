@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="#2196F3"
+        app:cardBackgroundColor="?attr/qtCardBackground"
         app:cardCornerRadius="30dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -190,7 +190,7 @@
                     android:layout_marginTop="24dp"
                     android:backgroundTint="@android:color/white"
                     android:text="@string/register"
-                    android:textColor="#2196F3"
+                    android:textColor="?attr/qtPrimary"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -199,9 +199,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_marginTop="12dp"
-                    android:backgroundTint="#B3E5FC"
+                    android:backgroundTint="?attr/qtContainer"
                     android:text="@string/already_have_account"
-                    android:textColor="#2196F3"
+                    android:textColor="?attr/qtPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
