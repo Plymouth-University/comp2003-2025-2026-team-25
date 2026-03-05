@@ -15,6 +15,8 @@ public interface ParentAccountDao {
     @Query("SELECT * FROM parent_account LIMIT 1")
     ParentAccount getSingleParent();
 
+    @Query("DELETE FROM parent_account")void deleteAllParents();
+
     // insert a new parent profile
     @Insert
     long insertParent(ParentAccount parentAccount);

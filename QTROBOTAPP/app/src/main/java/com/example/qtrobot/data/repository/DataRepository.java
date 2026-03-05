@@ -37,6 +37,10 @@ public class DataRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if(parentAccount!=null)
             {
+                //Clear existing profiles data
+                parentAccountDao.deleteAllParents();
+
+                //Insert new user
                 long newParentId = parentAccountDao.insertParent(parentAccount);
                 new Handler(Looper.getMainLooper()).post(() -> {
                     callback.onParentIdReceived(newParentId);
@@ -55,6 +59,9 @@ public class DataRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if(childProfile!=null)
             {
+                // delete previous data profile
+                childProfileDao.deleteAllChildren();
+                // insert a new child
                 childProfileDao.insertChild(childProfile);
             }
             else {

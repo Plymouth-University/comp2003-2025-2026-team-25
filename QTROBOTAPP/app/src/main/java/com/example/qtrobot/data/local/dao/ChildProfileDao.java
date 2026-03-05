@@ -14,15 +14,20 @@ import java.util.List;
 
 @Dao
 public interface ChildProfileDao {
-    @Query("SELECT * FROM child_profile LIMIT 1")
+    //@Query("SELECT * FROM child_profile LIMIT 1")
+    @Query("SELECT * FROM child_profile")
     ChildProfile getSingleChild();
 
+    @Query("DELETE FROM child_profile")void deleteAllChildren();
+
     // If need to access by id:
-    @Query("SELECT * FROM child_profile WHERE id = :childId LIMIT 1")
+    // @Query("SELECT * FROM child_profile WHERE id = :childId LIMIT 1")
+    @Query("SELECT * FROM child_profile WHERE id = :childId")
     ChildProfile getChildById(long childId);
 
     // get the child which needs to be synced to cloud
-    @Query("SELECT * FROM child_profile WHERE is_dirty = 1 LIMIT 1")
+    //@Query("SELECT * FROM child_profile WHERE is_dirty = 1 LIMIT 1")
+    @Query("SELECT * FROM child_profile WHERE is_dirty = 1")
     ChildProfile getUnsyncedChild();
 
     // insert new child profile
