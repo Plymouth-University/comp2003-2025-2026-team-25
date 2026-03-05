@@ -19,4 +19,10 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=admin
     ports:
       - "8080:8080"  # Map port 8080 for the Keycloak UI
-    command: start-dev
+    volumes:
+      # Mount local Keycloak export(s) so they can be imported automatically
+      - ./keycloak:/opt/keycloak/data/import
+    # Import any realm JSON files from /opt/keycloak/data/import on startup
+    command:
+      - start-dev
+      - --import-realm

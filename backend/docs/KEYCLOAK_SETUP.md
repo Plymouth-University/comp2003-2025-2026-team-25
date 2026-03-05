@@ -318,6 +318,38 @@ Before going to production, consider:
 
 ---
 
+## 12. Sharing your Keycloak config via Docker
+
+If you want teammates to get your exact Keycloak setup (realm, roles, users, clients) just by running Docker:
+
+1. **Export your realm from your local Keycloak**
+   - In the Keycloak Admin Console (top-left realm selector), select the `qtrobot` realm.
+   - Go to **Realm settings → General**.
+   - Click **Partial export** or **Export** (depending on version).
+   - Choose:
+     - **Export groups and roles**: ON
+     - **Export clients**: ON
+     - **Export users**: ON (if you want test users shared)
+   - Download the JSON file and name it, for example, `qtrobot-realm-export.json`.
+
+2. **Place the export in the project**
+   - Create a folder `backend/keycloak` (if it doesn’t exist).
+   - Save the exported file there, e.g. `backend/keycloak/qtrobot-realm-export.json`.
+   - Commit this file if you’re happy to share the realm configuration (including any test users you exported).
+
+3. **How Docker picks it up**
+   - The `keycloak` service in `backend/docker-compose.yml` now mounts `./keycloak` into `/opt/keycloak/data/import` and starts Keycloak with `--import-realm`.
+   - On first start, Keycloak will read any `*.json` files from `/opt/keycloak/data/import` and create the realm/clients/roles/users defined there.
+
+4. **What your friend needs to do**
+   - Pull your repo (with the `backend/keycloak/*.json` file included).
+   - From the `backend` folder run:
+     - `docker compose pull`
+     - `docker compose up -d keycloak backend`
+   - After Keycloak starts, they will have the same `qtrobot` realm configuration you exported.
+
+---
+
 ## Summary checklist
 
 - [ ] Keycloak running (`docker-compose up -d keycloak`).
