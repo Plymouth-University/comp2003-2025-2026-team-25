@@ -100,14 +100,14 @@ def image_callback(msg):
                 if is_valid:
                     rospy.loginfo(f"User {user_id} authenticated")
                     if speechSay_pub:
-                        speechSay_pub.publish(f"Hello {user_id}! Access granted.")
+                        peechSay_pub.publish(f"Hello {user_id}! Welcome to the dentist!")
                     flash_end_time = current_time + FLASH_DURATION
                     flash_color = color
                     flash_rects = [rect_coords] if rect_coords else []
                 else:
                     rospy.loginfo("Unrecognized QR")
                     if speechSay_pub:
-                        speechSay_pub.publish("Access denied. Unrecognized QR.")
+                        peechSay_pub.publish("Sorry, I don't recognise your QR!")
                     flash_end_time = current_time + FLASH_DURATION
                     flash_color = color
                     flash_rects = [rect_coords] if rect_coords else []
