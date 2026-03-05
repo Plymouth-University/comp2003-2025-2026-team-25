@@ -51,4 +51,14 @@ dependencies {
 
     // ZXing for QR Code generation
     implementation(libs.zxing)
+
+    // Google Play Services for Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    // Retrofit for HTTP requests
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp for HTTP client
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }

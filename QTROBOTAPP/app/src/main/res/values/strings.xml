@@ -45,4 +45,7 @@
     <string name="learn_after_appt">After appointment</string>
     <string name="dentist_helper">Dentist Helper</string>
     <string name="qtrobot_title">QTrobot</string>
+
+    <!-- Google Sign-In: Replace with your actual Google OAuth 2.0 Web Client ID from Google Cloud Console -->
+    <string name="server_client_id">22218075647-s72jsa05bddrn15h9s97ksgk5nae86k6.apps.googleusercontent.com</string>
 </resources>

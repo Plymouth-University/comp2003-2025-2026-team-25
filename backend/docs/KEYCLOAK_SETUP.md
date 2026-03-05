@@ -180,6 +180,41 @@ docker-compose up -d backend
 
 ## 7. Create realm roles
 
+---
+
+## 7.1 (Optional) Add Google identity provider
+
+If you would like users to log in via Google instead of managing local
+credentials, Keycloak can broker the login. Follow these steps **after
+creating the realm** but before adding users:
+
+1. In the left-hand menu choose **Identity Providers**.
+2. Click **Add provider** and select **Google** from the dropdown.
+3. In parallel open the [Google Cloud Console credentials page](https://console.cloud.google.com/apis/credentials)
+   and create a new **OAuth 2.0 Client ID** (application type **Web
+   application**).
+   - Add Keycloak’s broker endpoint as a redirect URI, e.g.
+     `http://localhost:8080/realms/qtrobot/broker/google/endpoint`.
+   - Copy the **Client ID** and **Client Secret** from Google.
+4. Back in Keycloak, paste the Google values into the provider form.
+   Optionally adjust other settings (default scope, sync mode, first
+   login flow) then click **Save**.
+5. Optionally, edit the **Mappers** for the provider to control which
+   Google attributes end up in the Keycloak token (email, name, picture,
+   etc.).
+
+Once this is done, the Keycloak login page will show a “Log in with
+Google” button. You can also automatically send users to the Google flow by
+adding `kc_idp_hint=google` to the authorization URL.  The backend already
+includes example redirect endpoints (`/auth/login` and `/auth/google`).
+
+You may want to update `backend/keycloak/realm-export.json` to capture the
+provider configuration; a template snippet is added there in the repo.
+
+---
+
+## 7. Create realm roles
+
 Realm roles are in the JWT and your backend uses them (e.g. `admin`, `user`) for authorization.
 
 1. In the left menu, go to **Realm roles**.
