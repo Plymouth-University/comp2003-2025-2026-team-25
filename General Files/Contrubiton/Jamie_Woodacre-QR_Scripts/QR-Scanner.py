@@ -11,7 +11,7 @@ SYSTEM_SECRET = os.getenv("QR_SECRET_KEY")
 def verify_qr_data(scanned_text):
     """Checks if the scanned string is a valid, signed ID."""
     try:
-        # 1. Split the string 'user_id:hash'
+        #split the string 'user_id:hash'
         user_id, received_hash = scanned_text.split(":")
         
         #calculate what the hash should be using ssecret
@@ -59,4 +59,5 @@ def run_robot_scanner(camera_index=0):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
+
     run_robot_scanner()
