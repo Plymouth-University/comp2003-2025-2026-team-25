@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="qtPrimary" format="color" />
+    <attr name="qtContainer" format="color" />
+    <attr name="qtOnPrimary" format="color" />
+    <attr name="qtCardBackground" format="color" />
+    <attr name="qtAccent" format="color" />
+</resources>

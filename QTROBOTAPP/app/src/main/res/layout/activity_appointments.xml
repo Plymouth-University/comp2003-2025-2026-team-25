@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/page_border_background"
-    tools:context=".MainActivity">
+    tools:context=".AppointmentsActivity">
 
     <ImageButton
         android:id="@+id/go_back_button"
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Upcoming_Appointments"
-        android:textColor="#2196F3"
+        android:textColor="?attr/qtPrimary"
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/go_back_button"
@@ -42,7 +42,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="32dp"
-        app:cardBackgroundColor="#2196F3"
+        app:cardBackgroundColor="?attr/qtPrimary"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"

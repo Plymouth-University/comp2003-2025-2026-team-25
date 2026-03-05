@@ -12,7 +12,7 @@
         android:id="@+id/loading_spinner"
         android:layout_width="220dp"
         android:layout_height="220dp"
-        android:indeterminateTint="#2196F3"
+        android:indeterminateTint="?attr/qtPrimary"
         app:layout_constraintTop_toTopOf="@id/qtrobot_image"
         app:layout_constraintBottom_toBottomOf="@id/qtrobot_image"
         app:layout_constraintStart_toStartOf="@id/qtrobot_image"

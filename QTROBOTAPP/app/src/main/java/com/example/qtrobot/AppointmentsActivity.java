@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class AppointmentsActivity extends AppCompatActivity {
+public class AppointmentsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,12 +13,13 @@ public class AppointmentsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_appointments);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AppointmentsActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 }

@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/well_done"
-        android:textColor="#2196F3"
+        android:textColor="?attr/qtPrimary"
         android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/qtrobot_image"
@@ -37,8 +37,8 @@
 
     <ImageView
         android:id="@+id/qtrobot_image"
-        android:layout_width="631dp"
-        android:layout_height="866dp"
+        android:layout_width="395dp"
+        android:layout_height="663dp"
         android:src="@drawable/qtrobot"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

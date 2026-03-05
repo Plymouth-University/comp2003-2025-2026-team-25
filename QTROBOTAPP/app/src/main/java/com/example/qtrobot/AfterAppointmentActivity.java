@@ -2,13 +2,12 @@ package com.example.qtrobot;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AfterAppointmentActivity extends AppCompatActivity {
+public class AfterAppointmentActivity extends BaseActivity {
 
     private MediaPlayer mediaPlayer;
 
@@ -18,7 +17,9 @@ public class AfterAppointmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_after_appointment);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(v -> finish());
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(v -> finish());
+        }
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         
@@ -28,29 +29,30 @@ public class AfterAppointmentActivity extends AppCompatActivity {
         cards.add(new CardModel("Thank you!", "For taking the time to learn with me today", R.drawable.qt_thanks));
 
         CardAdapter adapter = new CardAdapter(cards);
-        viewPager.setAdapter(adapter);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
 
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                switch (position) {
-                    case 0:
-                        playSound(R.raw.after_your_appointment_the_dentists_will_talk_about_next_steps);
-                        break;
-                    case 1:
-                        playSound(R.raw.qt_ask_questions);
-                        break;
-                    case 2:
-                        playSound(R.raw.thankyou_for_learning);
-                        break;
-                    default:
-                        stopSound();
-                        break;
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    switch (position) {
+                        case 0:
+                            playSound(R.raw.after_your_appointment_the_dentists_will_talk_about_next_steps);
+                            break;
+                        case 1:
+                            playSound(R.raw.qt_ask_questions);
+                            break;
+                        case 2:
+                            playSound(R.raw.thankyou_for_learning);
+                            break;
+                        default:
+                            stopSound();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void playSound(int resId) {

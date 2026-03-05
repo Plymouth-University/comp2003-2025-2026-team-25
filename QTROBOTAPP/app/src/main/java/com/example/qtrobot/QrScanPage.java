@@ -11,8 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -21,7 +19,7 @@ import com.google.zxing.common.BitMatrix;
 import java.util.Locale;
 import java.util.UUID;
 
-public class QrScanPage extends AppCompatActivity {
+public class QrScanPage extends BaseActivity {
 
     private static final String PREFS_NAME = "QTrobotPrefs";
     private static final String KEY_USER_UUID = "user_uuid";
@@ -37,6 +35,10 @@ public class QrScanPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan_page);
+
+        // Apply robot image theme
+        ImageView robotImage = findViewById(R.id.qtrobot_image);
+        RobotImageHelper.applyRobot(robotImage, this);
 
         qrCodeImageView = findViewById(R.id.large_qr_code);
         timerTextView = findViewById(R.id.countdown_timer);

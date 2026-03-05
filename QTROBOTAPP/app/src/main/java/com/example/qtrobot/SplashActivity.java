@@ -1,20 +1,20 @@
-package com.example.qtrobot;   // keep your real package name here
+package com.example.qtrobot;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class SplashActivity extends AppCompatActivity {
-
-    private static final int SPLASH_DURATION = 2000; // 2 seconds
+public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        ImageView robotImage = findViewById(R.id.qtrobot_image);
+        RobotImageHelper.applyRobot(robotImage, this);
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -23,6 +23,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, SPLASH_DURATION);
+        }, 3000);
     }
 }

@@ -3,9 +3,8 @@ package com.example.qtrobot;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class LearnActivity extends AppCompatActivity {
+public class LearnActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,7 +12,9 @@ public class LearnActivity extends AppCompatActivity {
         setContentView(R.layout.activity_learn);
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
-        goBackButton.setOnClickListener(v -> finish());
+        if (goBackButton != null) {
+            goBackButton.setOnClickListener(v -> finish());
+        }
 
         findViewById(R.id.arrival_button).setOnClickListener(v -> {
             startActivity(new Intent(this, ArrivalActivity.class));

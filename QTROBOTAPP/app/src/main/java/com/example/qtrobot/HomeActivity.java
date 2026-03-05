@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Apply robot image theme
+        ImageView robotImage = findViewById(R.id.qtrobot_image);
+        RobotImageHelper.applyRobot(robotImage, this);
 
         // Replace QR Image with QR Code Button
         ImageButton qrCodeButton = findViewById(R.id.qr_code_button);

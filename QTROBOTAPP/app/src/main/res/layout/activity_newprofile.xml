@@ -54,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="#2196F3"
+        app:cardBackgroundColor="?attr/qtCardBackground"
         app:cardCornerRadius="30dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -128,7 +128,7 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@android:color/white"
                 android:text="@string/continue_text"
-                android:textColor="#2196F3"
+                android:textColor="?attr/qtPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
