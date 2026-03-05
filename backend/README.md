@@ -40,3 +40,26 @@ Follow these instructions to set up and run the backend server on your local mac
    pip install -r requirements.txt
    # 4. UviCORN
    uvicorn main:app --reload
+
+
+
+
+
+   http://localhost:8080/admin
+   docker-compose up -d keycloak
+
+
+
+
+docker build -t qtrobot-backend:v3 .
+docker tag qtrobot-backend:v3 okyanusalbas/qtrobot-backend:v3
+docker tag qtrobot-backend:v3 okyanusalbas/qtrobot-backend:latest
+docker push okyanusalbas/qtrobot-backend:v3
+docker push okyanusalbas/qtrobot-backend:latest
+
+
+
+docker pull okyanusalbas/qtrobot-backend:latest
+
+docker compose pull
+docker compose up -d

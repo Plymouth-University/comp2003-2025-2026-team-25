@@ -13,17 +13,24 @@ load_dotenv()
 
 # --- Keycloak Configuration ---
 # These values are read from your .env file
+# Internal URL used **inside Docker** (backend -> Keycloak)
 KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+
+# Public URL used by the browser / Swagger UI.
+# Defaults to KEYCLOAK_SERVER_URL if not set.
+KEYCLOAK_PUBLIC_URL = os.getenv("KEYCLOAK_PUBLIC_URL", KEYCLOAK_SERVER_URL)
 
 
 # --- FastAPI Security and App Initialization ---
 
 # This tells FastAPI how to find the token. It will look for an
 # 'Authorization: Bearer <token>' header in incoming requests.
+# IMPORTANT: Swagger/OpenAPI will call this URL from the browser,
+# so it must be reachable from your machine (e.g. http://localhost:8080).
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f"{KEYCLOAK_SERVER_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
+    tokenUrl=f"{KEYCLOAK_PUBLIC_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
 )
 
 app = FastAPI(title="QTrobot Backend")
@@ -83,6 +90,16 @@ def ensure_role(current_user: Dict, required_role: str) -> None:
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Insufficient permissions, requires role '{required_role}'.",
         )
+
+
+def require_role(required_role: str):
+    """
+    Dependency that enforces a Keycloak realm role. Use in route: Depends(require_role("admin")).
+    """
+    async def role_checker(current_user: dict = Depends(get_current_user)):
+        ensure_role(current_user, required_role)
+        return current_user
+    return role_checker
 
 
 class SayCommand(BaseModel):

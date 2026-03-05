@@ -1,9 +1,8 @@
-version: '3.8'
-
 services:
   # Our Python Backend Service
   backend:
     image: okyanusalbas/qtrobot-backend:latest  # Use pre-built image from Docker Hub
+    pull_policy: always  # Always pull the newest 'latest' image
     container_name: qtrobot-backend-container
     ports:
       - "8000:8000"  # Map port 8000 on your machine to port 8000 in the container
