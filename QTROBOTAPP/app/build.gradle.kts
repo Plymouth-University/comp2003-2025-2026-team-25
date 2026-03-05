@@ -25,6 +25,12 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -55,9 +61,11 @@ dependencies {
     // Google Play Services for Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
-    // Retrofit for HTTP requests
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Retrofit (HTTP client to talk to AWS)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    // logs HTTP calls
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // OkHttp for HTTP client
     implementation("com.squareup.okhttp3:okhttp:4.11.0")

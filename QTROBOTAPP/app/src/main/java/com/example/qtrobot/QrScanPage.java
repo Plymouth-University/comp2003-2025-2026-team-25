@@ -11,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.qtrobot.ui.viewmodel.ChildViewModel;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -57,6 +60,30 @@ public class QrScanPage extends BaseActivity {
         }
 
         startTimer();
+
+
+        /*
+        // Functionality in development - DO NOT DELETE PLEASE
+
+        //CHANGED: observe child from Room instead of generating local UUID
+        ChildViewModel viewModel = new ViewModelProvider(this).get(ChildViewModel.class);
+        viewModel.getChildFromRoom().observe(this, child -> {
+            if (child != null && child.qr_string != null) {
+                Bitmap qrBitmap = generateQrCode(child.qr_string);
+                if (qrBitmap != null) {
+                    qrCodeImageView.setImageBitmap(qrBitmap);
+                    qrCodeImageView.setAlpha(1.0f);
+                    expiryMessageTextView.setVisibility(View.GONE);
+                    startTimer();
+                }
+            } else {
+                expiryMessageTextView.setText("Connect to internet or register a user to activate QR");
+                expiryMessageTextView.setVisibility(View.VISIBLE);
+            }
+        });
+
+         */
+
     }
 
     private void startTimer() {

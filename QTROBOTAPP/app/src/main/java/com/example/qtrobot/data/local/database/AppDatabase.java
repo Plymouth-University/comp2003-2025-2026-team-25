@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
         entities = {
                 ParentAccount.class,
                 ChildProfile.class
-        }, version = 2, exportSchema = false)
+        }, version = 3, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
