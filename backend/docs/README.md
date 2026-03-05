@@ -45,7 +45,8 @@ Follow these instructions to set up and run the backend server on your local mac
 
 
 
-   http://localhost:8080/admin
+   Keycloak: http://localhost:8080
+   SwaggerUi: http://localhost:8000
    docker-compose up -d keycloak
 
 
@@ -63,3 +64,7 @@ docker pull okyanusalbas/qtrobot-backend:latest
 
 docker compose pull
 docker compose up -d
+
+
+To restart without changing the files
+docker compose restart backend
