@@ -126,3 +126,67 @@ This gives “login on the robot via QR” while still using Keycloak for user i
 | Create users/roles | Keycloak Admin | Realm: Users, Realm roles, Client roles |
 
 If you tell me which of these you want first (e.g. “reusable role dependency” or “frontend login”), I can give the exact code changes in your repo.
+
+
+---
+
+## 2.6 Third‑party identity providers (Google)
+
+Keycloak is already acting as an OpenID Connect provider for your
+application. You can add additional login methods (for example "Login with
+Google") by configuring an **identity provider** within the same realm.
+Once that is set up, the token your backend receives looks exactly the same
+as for normal users – there is **no change to the FastAPI code**. The
+backend simply validates the JWT issued by Keycloak.
+
+### a) Keycloak configuration
+
+1. In the Keycloak Admin Console select your `qtrobot` realm.
+2. In the left menu click **Identity Providers**.
+3. Click **Add provider** and choose **Google**.
+4. Open the [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   and create an **OAuth 2.0 Client ID** (type: Web application).
+   - Add your Keycloak URL as an **authorized redirect URI**, e.g.:
+     `http://localhost:8080/realms/qtrobot/broker/google/endpoint`.
+   - Note the **Client ID** and **Client Secret** that Google gives you.
+5. Back in Keycloak, fill in the **Client ID** and **Client Secret** fields
+   under the provider settings. Leave the rest as defaults unless you need
+   custom scopes/claims. Save.
+6. (Optional) adjust the **First Login Flow** and mapper settings if you
+   want to automatically assign realm roles to new Google users.
+
+You can also export the realm (or the `identityProviders` portion) and save
+it in `backend/keycloak/realm-export.json`. An example entry is already
+included there.
+
+### b) Frontend integration
+
+- If you use a redirect‑based login flow, simply send the user to the
+  Keycloak authorization endpoint with a hint: `...?kc_idp_hint=google`.
+  We added two convenience endpoints in the backend:
+  - `GET /auth/login` – generic redirect, accepts `?idp=<alias>` query
+    parameter.
+  - `GET /auth/google` – immediately starts the Google login flow.
+
+  Example: from JavaScript `window.location = '/auth/google';` or
+  `<a href="/auth/google">Login with Google</a>`.
+- The rest of your frontend code (exchanging code for tokens, calling the
+  backend with `Authorization: Bearer <token>`) remains unchanged.
+
+### c) Backend changes
+
+No code is required to **accept Google logins** – they appear as standard
+Keycloak tokens. We only added helper routes to ease redirects (above).
+Your `get_current_user` function and route dependencies work exactly the
+same.
+
+### d) Environment variables
+
+The backend does not need Google-specific secrets because Keycloak handles
+all communication with Google. If you prefer to template your realm export
+with environment variables, you can use placeholders such as
+`${KEYCLOAK_GOOGLE_CLIENT_ID}` and
+`${KEYCLOAK_GOOGLE_CLIENT_SECRET}` in `realm-export.json`.
+
+
+---

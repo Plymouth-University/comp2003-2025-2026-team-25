@@ -2,9 +2,11 @@ import os
 from typing import Dict, List
 
 import jwt
+import requests
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import RedirectResponse
 from jwt import PyJWKClient
 from pydantic import BaseModel
 
@@ -17,6 +19,11 @@ load_dotenv()
 KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
+
+# Admin credentials used for Keycloak Admin REST API access
+KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
+KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
 
 # Public URL used by the browser / Swagger UI.
 # Defaults to KEYCLOAK_SERVER_URL if not set.
@@ -42,6 +49,126 @@ app = FastAPI(title="QTrobot Backend")
 # This is done once when the application starts.
 jwks_url = f"{KEYCLOAK_SERVER_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
 jwks_client = PyJWKClient(jwks_url)
+
+
+def get_keycloak_admin_access_token() -> str:
+    """
+    Obtain an access token for the Keycloak Admin REST API using the admin user.
+    """
+    if not KEYCLOAK_ADMIN_USERNAME or not KEYCLOAK_ADMIN_PASSWORD:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Keycloak admin credentials (KEYCLOAK_ADMIN_USERNAME / KEYCLOAK_ADMIN_PASSWORD) are not configured.",
+        )
+
+    token_url = f"{KEYCLOAK_SERVER_URL}realms/master/protocol/openid-connect/token"
+
+    try:
+        response = requests.post(
+            token_url,
+            data={
+                "grant_type": "password",
+                "client_id": "admin-cli",
+                "username": KEYCLOAK_ADMIN_USERNAME,
+                "password": KEYCLOAK_ADMIN_PASSWORD,
+            },
+            timeout=10,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to contact Keycloak token endpoint: {exc}",
+        ) from exc
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to obtain Keycloak admin token (status {response.status_code}): {response.text}",
+        )
+
+    data = response.json()
+    token = data.get("access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Keycloak admin token response did not contain an access_token.",
+        )
+    return token
+
+
+def fetch_keycloak_client_secret_from_admin_api() -> str:
+    """
+    Use the Keycloak Admin REST API to retrieve the client secret for KEYCLOAK_CLIENT_ID.
+    """
+    if not KEYCLOAK_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="KEYCLOAK_CLIENT_ID is not configured on the server.",
+        )
+
+    admin_token = get_keycloak_admin_access_token()
+    headers = {"Authorization": f"Bearer {admin_token}"}
+
+    # 1) Look up the internal client UUID by clientId
+    clients_url = f"{KEYCLOAK_SERVER_URL}admin/realms/{KEYCLOAK_REALM}/clients"
+    try:
+        clients_resp = requests.get(
+            clients_url,
+            params={"clientId": KEYCLOAK_CLIENT_ID},
+            headers=headers,
+            timeout=10,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to contact Keycloak clients endpoint: {exc}",
+        ) from exc
+
+    if clients_resp.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to query Keycloak clients (status {clients_resp.status_code}): {clients_resp.text}",
+        )
+
+    clients_data = clients_resp.json()
+    if not clients_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Keycloak client with clientId '{KEYCLOAK_CLIENT_ID}' not found.",
+        )
+
+    client_id_internal = clients_data[0].get("id")
+    if not client_id_internal:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Keycloak client lookup response did not contain an internal id.",
+        )
+
+    # 2) Fetch the client secret using the internal client UUID
+    secret_url = f"{KEYCLOAK_SERVER_URL}admin/realms/{KEYCLOAK_REALM}/clients/{client_id_internal}/client-secret"
+    try:
+        secret_resp = requests.get(secret_url, headers=headers, timeout=10)
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to contact Keycloak client-secret endpoint: {exc}",
+        ) from exc
+
+    if secret_resp.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to retrieve Keycloak client secret (status {secret_resp.status_code}): {secret_resp.text}",
+        )
+
+    secret_data = secret_resp.json()
+    secret_value = secret_data.get("value")
+    if not secret_value:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Keycloak client-secret response did not contain a 'value'.",
+        )
+
+    return secret_value
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict:
@@ -112,6 +239,82 @@ class QRLoginRequest(BaseModel):
 
 # --- API Endpoints ---
 
+# helper for building Keycloak authorization URLs
+
+def build_keycloak_auth_url(idp_hint: str | None = None) -> str:
+    """Return the Keycloak authorization endpoint URL. Optionally include
+    `kc_idp_hint` so the login page pre-selects an identity provider (e.g.
+    Google). The frontend can redirect users here or call the dedicated
+    /auth/google endpoint below.
+    """
+    base = f"{KEYCLOAK_PUBLIC_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/auth"
+    params = {
+        "client_id": KEYCLOAK_CLIENT_ID,
+        "response_type": "code",
+        "scope": "openid email profile",
+    }
+    if idp_hint:
+        params["kc_idp_hint"] = idp_hint
+
+    # build query string without importing urllib for simplicity
+    query = "&".join(f"{k}={requests.utils.quote(v)}" for k, v in params.items())
+    return f"{base}?{query}"
+
+
+@app.get("/auth/login")
+async def redirect_to_login(idp: str | None = None):
+    """Redirect the caller to the Keycloak login page.
+
+    If an `idp` query parameter is supplied (for example `?idp=google`), the
+    `kc_idp_hint` parameter will be added so Keycloak pre‑selects that
+    identity provider. This is useful if your frontend has a "Login with
+    Google" button and you want to avoid an extra click on Keycloak's
+    chooser page.
+    """
+    url = build_keycloak_auth_url(idp_hint=idp)
+    return RedirectResponse(url)
+
+
+@app.get("/auth/google")
+async def login_with_google():
+    """Shorthand endpoint that redirects directly to Keycloak's Google
+    identity provider flow.  """
+    return RedirectResponse(build_keycloak_auth_url(idp_hint="google"))
+
+
+class GoogleTokenExchange(BaseModel):
+    """Model for the Android app to exchange Google ID token for access token."""
+    google_id_token: str
+
+
+@app.post("/auth/exchange-google-token")
+async def exchange_google_token(request: GoogleTokenExchange):
+    """
+    Exchange a Google ID token (from Android client) for a Keycloak access token.
+    
+    This endpoint is called by the Android app after Google Sign-In completes.
+    The app sends the Google ID token, and we return a Keycloak JWT that can be
+    used to access protected resources.
+    
+    In a real implementation with a proper identity provider setup, this would:
+    1. Validate the Google ID token with Google's public keys
+    2. Create or fetch the corresponding Keycloak user
+    3. Issue a Keycloak JWT
+    
+    For now, this is a placeholder that demonstrates the flow. Full integration
+    requires Keycloak to be configured with Google as an identity provider.
+    """
+    # If Keycloak has a proper Google IDP configured and your app is redirecting
+    # through the browser, Keycloak handles the exchange automatically.
+    # This endpoint is for non-browser (e.g., mobile native) flows.
+    
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Direct token exchange requires Keycloak Google IDP + backend OIDC handling. "
+        "For now, use the browser-based flow: redirect to /auth/google",
+    )
+
+
 @app.get("/")
 def read_root():
     """A public endpoint that anyone can access."""
@@ -172,6 +375,30 @@ def admin_summary(current_user: dict = Depends(get_current_user)):
     return {
         "message": f"Welcome, {username}. This is an admin-only summary endpoint.",
         "user": username,
+    }
+
+
+@app.get("/admin/keycloak-client")
+def get_keycloak_client(current_user: dict = Depends(get_current_user)):
+    """
+    Admin-only endpoint that returns the Keycloak client ID and secret.
+
+    The client secret is fetched from Keycloak's Admin REST API at request time.
+    """
+    ensure_role(current_user, "admin")
+
+    if not KEYCLOAK_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="KEYCLOAK_CLIENT_ID is not configured on the server.",
+        )
+
+    # Prefer fetching the secret from Keycloak dynamically.
+    client_secret = fetch_keycloak_client_secret_from_admin_api()
+
+    return {
+        "client_id": KEYCLOAK_CLIENT_ID,
+        "client_secret": client_secret,
     }
 
 
