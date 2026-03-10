@@ -12,8 +12,10 @@ import com.example.qtrobot.data.local.entity.ParentAccount;
 public interface ParentAccountDao {
 
     //Get a single parent on this device
-    @Query("SELECT * FROM parent_account LIMIT 1")
+    @Query("SELECT * FROM parent_account")
     ParentAccount getSingleParent();
+
+    @Query("DELETE FROM parent_account")void deleteAllParents();
 
     // insert a new parent profile
     @Insert
