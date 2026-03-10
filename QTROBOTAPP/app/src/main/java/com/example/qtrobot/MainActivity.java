@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.google.android.gms.common.SignInButton;
+
 public class MainActivity extends BaseActivity {
 
     private EditText passwordInput;
@@ -25,30 +27,34 @@ public class MainActivity extends BaseActivity {
         passwordInput = findViewById(R.id.password_input);
         passwordToggle = findViewById(R.id.password_toggle);
 
-        passwordToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePasswordVisibility();
-            }
-        });
+        if (passwordToggle != null) {
+            passwordToggle.setOnClickListener(v -> togglePasswordVisibility());
+        }
 
         Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (loginButton != null) {
+            loginButton.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
-            }
-        });
+            });
+        }
 
         Button registerButton = findViewById(R.id.already_have_account_button);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (registerButton != null) {
+            registerButton.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
                 startActivity(intent);
-            }
-        });
+            });
+        }
+
+        // Add Google Sign-In Button redirection
+        SignInButton googleSignInButton = findViewById(R.id.googleSignInButton);
+        if (googleSignInButton != null) {
+            googleSignInButton.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, GoogleSignInActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     private void togglePasswordVisibility() {

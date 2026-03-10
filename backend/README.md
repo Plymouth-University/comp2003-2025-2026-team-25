@@ -52,13 +52,14 @@ Follow these instructions to set up and run the backend server on your local mac
 
 
 
-docker build -t qtrobot-backend:v5.
-docker tag qtrobot-backend:v5 okyanusalbas/qtrobot-backend:v5
-docker tag qtrobot-backend:v4 okyanusalbas/qtrobot-backend:latest
-docker push okyanusalbas/qtrobot-backend:v5
+docker build -t qtrobot-backend:v6 .
+docker tag qtrobot-backend:v6 okyanusalbas/qtrobot-backend:v6
+docker tag qtrobot-backend:v6 okyanusalbas/qtrobot-backend:latest
+docker push okyanusalbas/qtrobot-backend:v6
 docker push okyanusalbas/qtrobot-backend:latest
 
-
+Run using Keycloak
+docker compose up -d keycloak backend
 
 docker pull okyanusalbas/qtrobot-backend:latest
 

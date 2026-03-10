@@ -6,15 +6,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingsActivity extends BaseActivity {
+
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        // Configure Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Apply robot image theme
         ImageView robotImage = findViewById(R.id.qt_image);
@@ -22,12 +34,7 @@ public class SettingsActivity extends BaseActivity {
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) {
-            goBackButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+            goBackButton.setOnClickListener(v -> finish());
         }
 
         SwitchMaterial switchTheme = findViewById(R.id.switchTheme);
@@ -35,36 +42,36 @@ public class SettingsActivity extends BaseActivity {
             switchTheme.setChecked(ThemePrefs.isPinkTheme(this));
             switchTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 ThemePrefs.setPinkTheme(this, isChecked);
-                // Recreate activity to apply theme
-                recreate();
-                // Also restart HomeActivity to ensure theme propagates everywhere
+                // Restart app to apply theme globally
                 Intent intent = new Intent(this, HomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                finish();
             });
         }
 
         Button signOutButton = findViewById(R.id.sign_out_button);
         if (signOutButton != null) {
-            signOutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-            });
+            signOutButton.setOnClickListener(v -> signOut());
         }
 
         Button addChildProfileButton = findViewById(R.id.add_child_profile_button);
         if (addChildProfileButton != null) {
-            addChildProfileButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(SettingsActivity.this, NewProfileActivity.class);
-                    startActivity(intent);
-                }
+            addChildProfileButton.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingsActivity.this, NewProfileActivity.class);
+                startActivity(intent);
             });
         }
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+            // Go back to the sign-in screen
+            Intent intent = new Intent(SettingsActivity.this, GoogleSignInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 }

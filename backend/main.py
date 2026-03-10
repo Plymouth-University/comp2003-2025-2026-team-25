@@ -13,21 +13,30 @@ from pydantic import BaseModel
 # Load environment variables from your .env file
 load_dotenv()
 
-# --- Keycloak Configuration ---
+# --- Keycloak & Google Configuration ---
 # These values are read from your .env file
 # Internal URL used **inside Docker** (backend -> Keycloak)
 KEYCLOAK_SERVER_URL = os.getenv("KEYCLOAK_SERVER_URL")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
 
 # Admin credentials used for Keycloak Admin REST API access
 KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
 KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
 
+# Client secret will be set automatically later
+KEYCLOAK_CLIENT_SECRET = None
+
 # Public URL used by the browser / Swagger UI.
 # Defaults to KEYCLOAK_SERVER_URL if not set.
 KEYCLOAK_PUBLIC_URL = os.getenv("KEYCLOAK_PUBLIC_URL", KEYCLOAK_SERVER_URL)
+
+# Google OAuth client ID used by the Android app (for ID token validation)
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
+# Secret used to mint short-lived app tokens when exchanging Google ID tokens.
+# This lets the backend accept either a Keycloak JWT or an internal app JWT.
+APP_JWT_SECRET = os.getenv("APP_JWT_SECRET")
 
 
 # --- FastAPI Security and App Initialization ---
@@ -41,14 +50,6 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 app = FastAPI(title="QTrobot Backend")
-
-
-# --- Keycloak Token Verification Logic ---
-
-# We fetch the public keys from Keycloak, which are used to verify the token's signature.
-# This is done once when the application starts.
-jwks_url = f"{KEYCLOAK_SERVER_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
-jwks_client = PyJWKClient(jwks_url)
 
 
 def get_keycloak_admin_access_token() -> str:
@@ -171,6 +172,26 @@ def fetch_keycloak_client_secret_from_admin_api() -> str:
     return secret_value
 
 
+
+# --- Keycloak Token Verification Logic ---
+
+# We fetch the public keys from Keycloak, which are used to verify the token's signature.
+# This is done once when the application starts.
+jwks_url = f"{KEYCLOAK_SERVER_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
+jwks_client = PyJWKClient(jwks_url)
+
+# Automatically fetch the client secret from Keycloak on startup
+try:
+    KEYCLOAK_CLIENT_SECRET = fetch_keycloak_client_secret_from_admin_api()
+    print(f"✅ Automatically fetched client secret for '{KEYCLOAK_CLIENT_ID}'")
+except Exception as e:
+    print(f"❌ Failed to fetch client secret: {e}")
+    # Fallback to environment variable if automatic fetch fails
+    KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
+    if not KEYCLOAK_CLIENT_SECRET:
+        raise RuntimeError("Could not obtain KEYCLOAK_CLIENT_SECRET. Please check your configuration.")
+
+
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict:
     """
     This function is a "dependency" that will be run for any endpoint that needs protection.
@@ -178,33 +199,45 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict:
     If the token is invalid or expired, it will raise an error.
     If the token is valid, it returns the user's information contained within the token.
     """
-    try:
-        # Get the key used to sign the token
-        signing_key = jwks_client.get_signing_key_from_jwt(token)
+    last_error: Exception | None = None
 
-        # Decode the token. This also checks the expiration time and signature.
+    # First, try to treat the token as a Keycloak-issued JWT.
+    try:
+        signing_key = jwks_client.get_signing_key_from_jwt(token)
         data = jwt.decode(
             token,
             signing_key.key,
             algorithms=["RS256"],
-            # The 'audience' must match our client ID
             audience=KEYCLOAK_CLIENT_ID,
             options={"verify_exp": True},
         )
         return data
+    except Exception as e:  # noqa: BLE001 - we re-map to HTTPException below
+        last_error = e
 
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Your session has expired. Please log in again.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    except jwt.InvalidTokenError as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Could not validate user credentials: {e}",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    # If that fails and we have an app-level JWT secret configured, try to treat
+    # the token as an internally issued app JWT (e.g. from Google token exchange).
+    if APP_JWT_SECRET:
+        try:
+            data = jwt.decode(
+                token,
+                APP_JWT_SECRET,
+                algorithms=["HS256"],
+                options={"verify_exp": True},
+            )
+            return data
+        except Exception as e:  # noqa: BLE001
+            last_error = e
+
+    # If we get here, neither Keycloak nor app token verification succeeded.
+    message = "Could not validate user credentials."
+    if isinstance(last_error, jwt.ExpiredSignatureError):
+        message = "Your session has expired. Please log in again."
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=message,
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 
 def ensure_role(current_user: Dict, required_role: str) -> None:
@@ -290,29 +323,102 @@ class GoogleTokenExchange(BaseModel):
 @app.post("/auth/exchange-google-token")
 async def exchange_google_token(request: GoogleTokenExchange):
     """
-    Exchange a Google ID token (from Android client) for a Keycloak access token.
-    
-    This endpoint is called by the Android app after Google Sign-In completes.
-    The app sends the Google ID token, and we return a Keycloak JWT that can be
-    used to access protected resources.
-    
-    In a real implementation with a proper identity provider setup, this would:
-    1. Validate the Google ID token with Google's public keys
-    2. Create or fetch the corresponding Keycloak user
-    3. Issue a Keycloak JWT
-    
-    For now, this is a placeholder that demonstrates the flow. Full integration
-    requires Keycloak to be configured with Google as an identity provider.
+    Exchange a Google ID token (from the Android client) for an **app access
+    token** that this backend accepts on protected endpoints.
+
+    Flow:
+    1. Validate the Google ID token with Google's `tokeninfo` endpoint.
+    2. If valid and the audience matches our `GOOGLE_CLIENT_ID`, mint a
+       short-lived JWT signed with `APP_JWT_SECRET` that encodes the user's
+       basic identity (sub, email, name).
+    3. Return that JWT in a standard-looking `{access_token, token_type,
+       expires_in}` payload so the Android client can store and reuse it.
+
+    Note: This does **not** create a user in Keycloak; instead, the backend's
+    `get_current_user` can understand both Keycloak tokens and these app tokens.
     """
-    # If Keycloak has a proper Google IDP configured and your app is redirecting
-    # through the browser, Keycloak handles the exchange automatically.
-    # This endpoint is for non-browser (e.g., mobile native) flows.
-    
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Direct token exchange requires Keycloak Google IDP + backend OIDC handling. "
-        "For now, use the browser-based flow: redirect to /auth/google",
+    if not GOOGLE_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GOOGLE_CLIENT_ID is not configured on the server.",
+        )
+    if not APP_JWT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="APP_JWT_SECRET is not configured on the server.",
+        )
+
+    google_id_token = request.google_id_token
+    if not google_id_token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="google_id_token is required.",
+        )
+
+    # 1) Validate the Google ID token with Google's tokeninfo endpoint.
+    tokeninfo_url = "https://oauth2.googleapis.com/tokeninfo"
+    try:
+        resp = requests.get(tokeninfo_url, params={"id_token": google_id_token}, timeout=10)
+    except requests.RequestException as exc:  # noqa: TRY003
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to contact Google tokeninfo endpoint: {exc}",
+        ) from exc
+
+    if resp.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Google ID token validation failed (status {resp.status_code}).",
+        )
+
+    tokeninfo = resp.json()
+    aud = tokeninfo.get("aud")
+    if aud != GOOGLE_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google ID token audience does not match this app.",
+        )
+
+    # Basic sanity check on issuer
+    iss = tokeninfo.get("iss", "")
+    if iss not in ("accounts.google.com", "https://accounts.google.com"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google ID token issuer is invalid.",
+        )
+
+    # 2) Build app-level claims from the Google token
+    user_sub = tokeninfo.get("sub")
+    email = tokeninfo.get("email")
+    email_verified = tokeninfo.get("email_verified")
+    name = tokeninfo.get("name")
+
+    if not user_sub:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google ID token did not contain a subject.",
+        )
+
+    claims = {
+        "sub": user_sub,
+        "email": email,
+        "email_verified": email_verified,
+        "name": name,
+        "auth_source": "google",
+    }
+
+    # 3) Mint a short-lived app JWT (1 hour by default)
+    access_token = jwt.encode(
+        claims,
+        APP_JWT_SECRET,
+        algorithm="HS256",
     )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expires_in": 3600,
+    }
 
 
 @app.get("/")

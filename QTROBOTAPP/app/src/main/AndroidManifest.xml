@@ -14,7 +14,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_qt_robot"
         android:supportsRtl="true"
-        android:theme="@style/Theme.QTrobot">
+        android:theme="@style/Theme.QTrobot"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".SplashActivity"

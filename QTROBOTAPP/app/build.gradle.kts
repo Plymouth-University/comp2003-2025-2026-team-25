@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.qtrobot"
-    compileSdk = 36
+    compileSdk = 36 // Set to 36 to support the latest androidx libraries
 
     defaultConfig {
         applicationId = "com.example.qtrobot"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35 // Keep target at 35 for stability
         versionCode = 1
         versionName = "1.0"
 

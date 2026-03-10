@@ -4,18 +4,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.Task;
 
 import retrofit2.Call;
@@ -23,126 +27,180 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
-public class GoogleSignInActivity extends AppCompatActivity {
+public class GoogleSignInActivity extends BaseActivity {
 
     private static final String TAG = "GoogleSignInActivity";
-    private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
-    private Button googleSignInButton;
     private TextView statusText;
+    private boolean isSigningIn = false;
+
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                isSigningIn = false;
+                Intent data = result.getData();
+
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    // Extracting the account to ensure the task was successful
+                    task.getResult(ApiException.class);
+                    handleSignInResult(task);
+                } catch (ApiException e) {
+                    int statusCode = e.getStatusCode();
+                    Log.e(TAG, "Sign-in failed. Google Error Code: " + statusCode);
+                    
+                    String message;
+                    switch (statusCode) {
+                        case CommonStatusCodes.DEVELOPER_ERROR:
+                            message = "Developer Error (10): Check SHA-1/Package Name in Google Console";
+                            break;
+                        case 12500:
+                            message = "Sign-in failed (12500): Check OAuth Config / Test Users";
+                            break;
+                        case CommonStatusCodes.NETWORK_ERROR:
+                            message = "Network error - check your connection";
+                            break;
+                        case 12501:
+                            message = "Sign-in cancelled";
+                            break;
+                        default:
+                            message = "Sign-in error: " + statusCode;
+                    }
+                    
+                    if (statusCode != 12501 && !isFinishing()) {
+                        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                    }
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_signin);
+        try {
+            setContentView(R.layout.activity_google_signin);
 
-        progressBar = findViewById(R.id.progressBar);
-        googleSignInButton = findViewById(R.id.googleSignInButton);
-        statusText = findViewById(R.id.statusText);
+            progressBar = findViewById(R.id.progressBar);
+            SignInButton googleSignInButton = findViewById(R.id.googleSignInButton);
+            statusText = findViewById(R.id.statusText);
 
-        // Configure Google Sign-In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.server_client_id))
-                .requestEmail()
-                .build();
+            if (googleSignInButton != null) {
+                googleSignInButton.setSize(SignInButton.SIZE_WIDE);
+                googleSignInButton.setOnClickListener(v -> signIn());
+            }
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+            // Configure Google Sign-In
+            String serverClientId = getString(R.string.server_client_id);
+            Log.d(TAG, "Using Server Client ID: " + serverClientId);
 
-        googleSignInButton.setOnClickListener(v -> signIn());
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(serverClientId)
+                    .requestEmail()
+                    .build();
 
-        // Check if user is already signed in
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            navigateToHome(account);
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+            // Check if user is already signed in
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+            if (account != null) {
+                navigateToHome(account);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate", e);
+            if (!isFinishing()) Toast.makeText(this, "Initialization error", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+        if (isSigningIn) return;
+        
+        isSigningIn = true;
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        
+        if (mGoogleSignInClient != null) {
+            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                signInLauncher.launch(signInIntent);
+            });
         }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.d(TAG, "signInResult: Success");
-            progressBar.setVisibility(android.view.View.VISIBLE);
-            statusText.setText("Signing in...");
+            if (account == null) return;
+            
+            Log.d(TAG, "Sign-in success for user: " + account.getEmail());
+            if (statusText != null) statusText.setText(R.string.signing_in);
 
-            // Get the ID token and send it to your backend
             String idToken = account.getIdToken();
             if (idToken != null) {
+                Log.d(TAG, "ID Token obtained successfully");
                 sendTokenToBackend(idToken);
             } else {
-                Toast.makeText(this, "Failed to get ID token", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(android.view.View.GONE);
+                Log.e(TAG, "Failed to obtain ID Token");
+                if (!isFinishing()) Toast.makeText(this, "Error: No ID Token", Toast.LENGTH_SHORT).show();
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
             }
         } catch (ApiException e) {
-            Log.w(TAG, "signInResult: failed code=" + e.getStatusCode(), e);
-            Toast.makeText(this, "Sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(android.view.View.GONE);
+            // Handled in the launcher
         }
     }
 
     private void sendTokenToBackend(String idToken) {
-        // Create Retrofit instance
+        // Use 10.0.2.2 for emulator.
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8000/") // 10.0.2.2 is localhost for Android emulator
+                .baseUrl("http://10.0.2.2:8000/") 
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        // Call your backend endpoint (you'll need to add this)
-        Call<TokenResponse> call = apiService.exchangeToken("Bearer " + idToken);
-        call.enqueue(new Callback<TokenResponse>() {
+        GoogleTokenExchangeRequest body = new GoogleTokenExchangeRequest();
+        body.google_id_token = idToken;
+
+        Log.d(TAG, "Sending ID Token to backend for exchange...");
+        Call<TokenResponse> call = apiService.exchangeToken(body);
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
-                progressBar.setVisibility(android.view.View.GONE);
+            public void onResponse(@NonNull Call<TokenResponse> call, @NonNull Response<TokenResponse> response) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d(TAG, "Token exchanged successfully");
-                    // Save the access token
+                    Log.d(TAG, "Backend token exchange successful");
                     SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
                     prefs.edit().putString("access_token", response.body().access_token).apply();
 
-                    // Get the signed-in account
-                    GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(GoogleSignInActivity.this);
-                    navigateToHome(account);
+                    navigateToHome(GoogleSignIn.getLastSignedInAccount(GoogleSignInActivity.this));
                 } else {
-                    statusText.setText("Authentication failed");
-                    Log.e(TAG, "Token exchange failed: " + response.code());
+                    Log.e(TAG, "Backend rejected token. Code: " + response.code());
+                    if (statusText != null && !isFinishing()) {
+                        statusText.setText(R.string.auth_failed);
+                        Toast.makeText(GoogleSignInActivity.this, "Server rejected token (Code " + response.code() + ")", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<TokenResponse> call, Throwable t) {
-                progressBar.setVisibility(android.view.View.GONE);
-                statusText.setText("Network error");
-                Log.e(TAG, "Network error", t);
-                Toast.makeText(GoogleSignInActivity.this, "Network error: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<TokenResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "Network failure when reaching backend", t);
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                if (statusText != null && !isFinishing()) {
+                    statusText.setText(R.string.network_error);
+                    Toast.makeText(GoogleSignInActivity.this, "Cannot reach server", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
     private void navigateToHome(GoogleSignInAccount account) {
-        if (account != null) {
-            Intent intent = new Intent(GoogleSignInActivity.this, HomeActivity.class);
+        if (account != null && !isFinishing()) {
+            Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra("user_name", account.getDisplayName());
             intent.putExtra("user_email", account.getEmail());
             startActivity(intent);
@@ -150,15 +208,16 @@ public class GoogleSignInActivity extends AppCompatActivity {
         }
     }
 
-    // API Service interfaces
     public interface ApiService {
-        @GET("/auth/google")
-        Call<TokenResponse> exchangeToken(@Header("Authorization") String token);
+        @POST("/auth/exchange-google-token")
+        Call<TokenResponse> exchangeToken(@Body GoogleTokenExchangeRequest request);
     }
 
     public static class TokenResponse {
         public String access_token;
-        public String token_type;
-        public long expires_in;
+    }
+
+    public static class GoogleTokenExchangeRequest {
+        public String google_id_token;
     }
 }

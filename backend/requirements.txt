@@ -1,47 +1,52 @@
-    # =========================================
-    # QTrobot Backend – Python Dependencies
-    # =========================================
+# =========================================
+# QTrobot Backend – Python Dependencies
+# =========================================
 
-    # -----------------------------
-    # Web framework & API server
-    # -----------------------------
-    fastapi
-    uvicorn[standard]
+# -----------------------------
+# Web framework & API server
+# -----------------------------
+fastapi
+uvicorn[standard]
 
-    #-----------------------------
-    # Data validation & modelling
-    # -----------------------------
-    pydantic
+# -----------------------------
+# Data validation & modelling
+# -----------------------------
+pydantic
 
-    # -----------------------------
-    # Security & JWT Handling
-    # -----------------------------
-    python-jose[cryptography]
-    PyJWT
+# -----------------------------
+# Google Authentication
+# -----------------------------
+google-auth
+# Required to verify the google_id_token sent from the Android app.
 
-    # -----------------------------
-    # External HTTP communication
-    # -----------------------------
-    requests
+# -----------------------------
+# Security & JWT Handling
+# -----------------------------
+python-jose[cryptography]
+PyJWT
 
-    # -----------------------------
-    # Configuration management
-    # -----------------------------
-    python-dotenv
+# -----------------------------
+# External HTTP communication
+# -----------------------------
+requests
+httpx
 
-    # -----------------------------
-    # Asynchronous utilities
-    # -----------------------------
-    anyio
+# -----------------------------
+# Configuration management
+# -----------------------------
+python-dotenv
 
-    # -----------------------------
-    # Caching & optimisation
-    # -----------------------------
-    cachetools
+# -----------------------------
+# Asynchronous utilities
+# -----------------------------
+anyio
 
-    # -----------------------------
-    # Testing & quality assurance
-    # -----------------------------
-    pytest
-    httpx
-    
+# -----------------------------
+# Caching & optimisation
+# -----------------------------
+cachetools
+
+# -----------------------------
+# Testing & quality assurance
+# -----------------------------
+pytest

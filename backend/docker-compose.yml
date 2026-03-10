@@ -1,8 +1,14 @@
 services:
   # Our Python Backend Service
   backend:
-    image: okyanusalbas/qtrobot-backend:latest  # Use pre-built image from Docker Hub
-    pull_policy: always  # Always pull the newest 'latest' image
+    # Build the image locally from the Dockerfile in this directory. This
+    # ensures changes (like the Python base image bump) are picked up instead
+    # of always pulling the remote "latest" image from Docker Hub.
+    build: .
+    image: okyanusalbas/qtrobot-backend:latest
+    # when build: is specified, pull_policy is ignored. If you ever switch
+    # back to pulling, use "if-not-present" instead of always.
+    # pull_policy: always
     container_name: qtrobot-backend-container
     ports:
       - "8000:8000"  # Map port 8000 on your machine to port 8000 in the container

@@ -1,5 +1,7 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use a newer Python runtime (3.11+) so we can use modern syntax like
+# the PEP 604 union type (`str | None`). Python 3.9 doesn't support this syntax,
+# which was causing the container to crash during startup.
+FROM python:3.11-slim
 
 # Set the working directory inside the container
 WORKDIR /app

@@ -46,6 +46,10 @@
     <string name="dentist_helper">Dentist Helper</string>
     <string name="qtrobot_title">QTrobot</string>
 
-    <!-- Google Sign-In: Replace with your actual Google OAuth 2.0 Web Client ID from Google Cloud Console -->
-    <string name="server_client_id">22218075647-s72jsa05bddrn15h9s97ksgk5nae86k6.apps.googleusercontent.com</string>
+    <string name="signing_in">Signing in...</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="network_error">Network error</string>
+
+    <!-- Google Sign-In: Use the WEB APPLICATION client ID here for backend verification -->
+    <string name="server_client_id">22218075647-356a5vkjprhrvlt5f5a0hnbim57lgmqg.apps.googleusercontent.com</string>
 </resources>
