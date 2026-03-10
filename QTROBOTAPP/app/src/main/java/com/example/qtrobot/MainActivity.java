@@ -2,27 +2,17 @@ package com.example.qtrobot;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-<<<<<<< HEAD
 import com.google.android.gms.common.SignInButton;
-=======
 import com.example.qtrobot.data.local.dao.ChildProfileDao;
 import com.example.qtrobot.data.local.dao.ParentAccountDao;
 import com.example.qtrobot.data.local.database.AppDatabase;
 
->>>>>>> d73232e6af9df3daf7e21f825bea8ab404e63888
-
 public class MainActivity extends BaseActivity {
-
-    //-- Room DB declarations block starts here --
-    private AppDatabase db;
-    private ParentAccountDao parentAccountDao;
-    private ChildProfileDao childProfileDao;
 
     private EditText passwordInput;
     private ImageButton passwordToggle;
@@ -32,20 +22,17 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // get singleton DB instance
-        db = AppDatabase.getInstance(getApplicationContext());
 
-        // get DAO instances
-        parentAccountDao = db.parentAccountDao();
-        childProfileDao = db.childProfileDao();
+        //-- Room DB initialization (local variables since they are only used here) --
+        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+        ParentAccountDao parentAccountDao = db.parentAccountDao();
+        ChildProfileDao childProfileDao = db.childProfileDao();
 
-        //use DB on background thread (for test)
+        // use DB on background thread (for test)
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            ParentAccountDao dao = AppDatabase.getInstance(getApplicationContext()).parentAccountDao();
             // this will just touch the DB so it’s created
-            dao.getSingleParent();
+            parentAccountDao.getSingleParent();
         });
-
         // -- Room DB integration ends here --
 
         ImageView robotImage = findViewById(R.id.qtrobot_image);

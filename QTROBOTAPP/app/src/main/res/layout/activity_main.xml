@@ -129,6 +129,12 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/googleSignInButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
