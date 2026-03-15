@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.qtrobot.data.repository.DataRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -65,10 +66,22 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void signOut() {
+        // to clear Guest flag (when signed in as guest)
+        getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
+
+        // Clear the Room Database user data using DataRepository
+        // We do this on a background thread via the executor in AppDatabase
+        DataRepository repository = new DataRepository(getApplication());
+
+        repository.clearAllLocalData();
+
+        // Clear Google Sign-In session
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
-            // Go back to the sign-in screen
-            Intent intent = new Intent(SettingsActivity.this, GoogleSignInActivity.class);
+            // Go back to the (Welcome activity)
+            Intent intent = new Intent(SettingsActivity.this, WelcomeActivity.class);
+
+            //clears the entire activity stack so users can't "Go Back" into the app
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

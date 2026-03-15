@@ -75,6 +75,13 @@ public class DataRepository {
         });
     }
 
+    public void clearAllLocalData() {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            parentAccountDao.deleteAllParents();
+            childProfileDao.deleteAllChildren();
+        });
+    }
+
     // --- ChildProfile Methods ---
 
     // INSERT child to Room (offline)

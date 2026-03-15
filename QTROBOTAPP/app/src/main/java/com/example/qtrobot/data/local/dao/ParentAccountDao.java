@@ -15,7 +15,8 @@ public interface ParentAccountDao {
     @Query("SELECT * FROM parent_account")
     ParentAccount getSingleParent();
 
-    @Query("DELETE FROM parent_account")void deleteAllParents();
+    @Query("DELETE FROM parent_account") // Delete all local parent accounts (for logout logic)
+    void deleteAllParents();
 
     // insert a new parent profile
     @Insert
@@ -31,5 +32,9 @@ public interface ParentAccountDao {
     //get parent account which needs sync to the cloud
     @Query("SELECT * FROM parent_account WHERE is_dirty = 1 LIMIT 1")
     ParentAccount getUnsyncedParent();
+
+
+
+
 
 }

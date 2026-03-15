@@ -86,6 +86,10 @@
             android:name=".AfterAppointmentActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
