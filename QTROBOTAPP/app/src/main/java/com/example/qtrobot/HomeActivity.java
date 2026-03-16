@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.qtrobot.ui.viewmodel.ChildViewModel;
 
 public class HomeActivity extends BaseActivity {
 
@@ -13,76 +18,68 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Apply robot image theme
+        // Session guard
+        SessionManager session = new SessionManager(this);
+        if (!session.isLoggedIn()) {
+            Intent intent = new Intent(this, GoogleSignInActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+                // Apply robot image theme
         ImageView robotImage = findViewById(R.id.qtrobot_image);
         RobotImageHelper.applyRobot(robotImage, this);
 
-        // Replace QR Image with QR Code Button
-        ImageButton qrCodeButton = findViewById(R.id.qr_code_button);
-        if (qrCodeButton != null) {
-            qrCodeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, QrScanPage.class);
-                    startActivity(intent);
+        // Greet by child's preferred name (observed from Room DB)
+        TextView greetingText = findViewById(R.id.greeting_text);
+        if (greetingText != null) {
+            ChildViewModel viewModel = new ViewModelProvider(this).get(ChildViewModel.class);
+            viewModel.setParentId(session.getParentId());
+            viewModel.getChildForCurrentParent().observe(this, child -> {
+                if (child != null && child.preferredName != null && !child.preferredName.isEmpty()) {
+                    greetingText.setText(getString(R.string.hi_greeting, child.preferredName));
+                    greetingText.setVisibility(View.VISIBLE);
+                } else {
+                    // Fallback to parent's Google name if no child yet
+                    String parentName = session.getParentName();
+                    if (parentName != null && !parentName.isEmpty()) {
+                        greetingText.setText(getString(R.string.hi_greeting, parentName));
+                        greetingText.setVisibility(View.VISIBLE);
+                    }
                 }
             });
+        }
+
+        ImageButton qrCodeButton = findViewById(R.id.qr_code_button);
+        if (qrCodeButton != null) {
+            qrCodeButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, QrScanPage.class)));
         }
 
         ImageButton upcomingApptTop = findViewById(R.id.upcoming_appointment_top);
         if (upcomingApptTop != null) {
-            upcomingApptTop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, AppointmentsActivity.class);
-                    startActivity(intent);
-                }
-            });
+            upcomingApptTop.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, AppointmentsActivity.class)));
         }
 
         ImageButton settingsButton = findViewById(R.id.app_settings_top);
         if (settingsButton != null) {
-            settingsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-                    startActivity(intent);
-                }
-            });
+            settingsButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SettingsActivity.class)));
         }
 
-        // Bottom Navigation Buttons
         ImageButton learnButton = findViewById(R.id.navigation_learn);
         if (learnButton != null) {
-            learnButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, LearnActivity.class);
-                    startActivity(intent);
-                }
-            });
+            learnButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, LearnActivity.class)));
         }
 
         ImageButton dailyBrushButton = findViewById(R.id.navigation_daily_brush);
         if (dailyBrushButton != null) {
-            dailyBrushButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, DailyBrushActivity.class);
-                    startActivity(intent);
-                }
-            });
+            dailyBrushButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, DailyBrushActivity.class)));
         }
 
         ImageButton brushTimerButton = findViewById(R.id.navigation_brush_time);
         if (brushTimerButton != null) {
-            brushTimerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(HomeActivity.this, BrushTimerActivity.class);
-                    startActivity(intent);
-                }
-            });
+            brushTimerButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, BrushTimerActivity.class)));
         }
     }
 }

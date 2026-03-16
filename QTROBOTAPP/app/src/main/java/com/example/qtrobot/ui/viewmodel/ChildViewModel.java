@@ -1,24 +1,42 @@
 package com.example.qtrobot.ui.viewmodel;
 
 import android.app.Application;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+
 import com.example.qtrobot.data.local.entity.ChildProfile;
 import com.example.qtrobot.data.repository.DataRepository;
 
 public class ChildViewModel extends AndroidViewModel {
 
     private final DataRepository repository;
-    private final LiveData<ChildProfile> child;
+    private final MutableLiveData<Long> parentIdLive = new MutableLiveData<>();
+    private final LiveData<ChildProfile> childForCurrentParent;
 
     public ChildViewModel(Application application) {
         super(application);
         repository = new DataRepository(application);
-        child = repository.getLocalChild();
+        childForCurrentParent = Transformations.switchMap(parentIdLive, parentId -> {
+            if (parentId == null || parentId < 0) {
+                return new MutableLiveData<>(null);
+            }
+            return repository.getChildForParent(parentId);
+        });
+    }
+
+    public void setParentId(long parentId) {
+        parentIdLive.setValue(parentId);
+    }
+
+    public LiveData<ChildProfile> getChildForCurrentParent() {
+        return childForCurrentParent;
     }
 
     public LiveData<ChildProfile> getChildFromRoom() {
-        return child;
+        return repository.getLocalChild();
     }
 
     public void refresh(String remoteChildId) {

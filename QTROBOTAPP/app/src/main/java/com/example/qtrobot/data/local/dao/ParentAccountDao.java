@@ -33,8 +33,14 @@ public interface ParentAccountDao {
     @Query("SELECT * FROM parent_account WHERE is_dirty = 1 LIMIT 1")
     ParentAccount getUnsyncedParent();
 
+<<<<<<< Updated upstream
 
 
 
+=======
+    /** Look up a parent by email — used to avoid duplicates on Google re-login. */
+    @Query("SELECT * FROM parent_account WHERE email = :email LIMIT 1")
+    ParentAccount getParentByEmail(String email);
+>>>>>>> Stashed changes
 
 }

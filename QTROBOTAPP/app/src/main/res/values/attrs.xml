@@ -5,4 +5,5 @@
     <attr name="qtOnPrimary" format="color" />
     <attr name="qtCardBackground" format="color" />
     <attr name="qtAccent" format="color" />
+    <attr name="qtButtonColor" format="color" />
 </resources>

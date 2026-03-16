@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/page_border_background"
-    tools:context=".AppointmentsActivity">
+    android:background="@drawable/page_border_background">
 
     <ImageButton
         android:id="@+id/go_back_button"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.13"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/solid_blue_rounded"
-        android:padding="16dp"
+        android:padding="12dp"
         android:scaleType="fitCenter"
         app:tint="@android:color/white"
         android:src="@drawable/go_back"
@@ -24,25 +24,29 @@
 
     <TextView
         android:id="@+id/upcoming_appointment_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/Upcoming_Appointments"
         android:textColor="?attr/qtPrimary"
-        android:textSize="40sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="@+id/go_back_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/go_back_button"
         app:layout_constraintTop_toTopOf="@+id/go_back_button" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
-        app:cardBackgroundColor="?attr/qtPrimary"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="?attr/qtButtonColor"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/date_label"
@@ -62,62 +66,81 @@
                 android:layout_height="wrap_content"
                 android:text="@string/date"
                 android:textColor="@android:color/white"
-                android:textSize="36sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/date_info"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/transparent_box_background"
-                android:padding="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+                <TextView
+                    android:id="@+id/date_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/location_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/location"
                 android:textColor="@android:color/white"
-                android:textSize="36sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/location_info"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/transparent_box_background"
-                android:padding="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+                <TextView
+                    android:id="@+id/location_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:id="@+id/info_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/additional_info"
                 android:textColor="@android:color/white"
-                android:textSize="36sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/info_details"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/transparent_box_background"
-                android:padding="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+                <TextView
+                    android:id="@+id/info_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

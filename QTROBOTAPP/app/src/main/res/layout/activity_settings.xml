@@ -10,8 +10,10 @@
 
     <ImageButton
         android:id="@+id/go_back_button"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.15"
+        app:layout_constraintDimensionRatio="1:1"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/solid_blue_rounded"
@@ -35,15 +37,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/go_back_button" />
 
+    <!-- Signed-in user info -->
+    <TextView
+        android:id="@+id/user_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="?attr/qtPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_label"
+        tools:text="Alice Smith"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/user_email_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_text"
+        tools:text="alice@example.com"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/qt_image"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.45"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginTop="8dp"
         android:src="@drawable/qtrobot"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/settings_label" />
+        app:layout_constraintTop_toBottomOf="@+id/user_email_text" />
 
     <TextView
         android:id="@+id/notification_preferences_title"
@@ -66,7 +100,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/reminders_label"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/reminders_switch"
         app:layout_constraintStart_toStartOf="@+id/notification_preferences_title"
         app:layout_constraintTop_toBottomOf="@+id/notification_preferences_title" />
@@ -76,10 +110,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        app:thumbTint="?attr/qtPrimary"
-        app:trackTint="?attr/qtPrimary"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:thumbTint="?colorPrimary"
+        app:trackTint="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/reminders_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/reminders_label" />
@@ -92,7 +126,7 @@
         android:layout_marginEnd="16dp"
         android:text="Pink theme"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/switchTheme"
         app:layout_constraintStart_toStartOf="@+id/reminders_label"
         app:layout_constraintTop_toBottomOf="@+id/reminders_label" />
@@ -102,10 +136,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        app:thumbTint="?attr/qtPrimary"
-        app:trackTint="?attr/qtPrimary"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        app:thumbTint="?colorPrimary"
+        app:trackTint="?colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/pink_theme_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pink_theme_label" />
@@ -113,13 +147,14 @@
     <Button
         android:id="@+id/add_child_profile_button"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="?attr/qtPrimary"
         android:text="@string/add_child_profile_button"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/qtOnPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
@@ -129,13 +164,14 @@
     <Button
         android:id="@+id/sign_out_button"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="?attr/qtPrimary"
         android:text="@string/sign_out_button"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/qtOnPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

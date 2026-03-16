@@ -47,9 +47,12 @@
     <string name="qtrobot_title">QTrobot</string>
 
     <string name="signing_in">Signing in...</string>
+    <string name="hi_greeting">Hi, %1$s!</string>
+    <string name="qr_expired">QR code has expired</string>
+    <string name="qr_not_available">Connect to the internet and register a child profile to activate your QR code</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="network_error">Network error</string>
 
     <!-- Google Sign-In: Use the WEB APPLICATION client ID here for backend verification -->
-    <string name="server_client_id">22218075647-356a5vkjprhrvlt5f5a0hnbim57lgmqg.apps.googleusercontent.com</string>
+    <string name="server_client_id">1061017147982-ee77krreqk0nor7tt8m6o8dc7l13lpu8.apps.googleusercontent.com </string>
 </resources>

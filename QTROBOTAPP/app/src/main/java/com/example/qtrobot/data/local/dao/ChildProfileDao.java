@@ -39,6 +39,10 @@ public interface ChildProfileDao {
     @Query("SELECT * FROM child_profile LIMIT 1")
     LiveData<ChildProfile> getFirstChild(); // single child assumption
 
+    /** Returns the first child belonging to the given local parent id. */
+    @Query("SELECT * FROM child_profile WHERE parent_id = :parentId LIMIT 1")
+    LiveData<ChildProfile> getChildByParentId(long parentId);
+
     // insert new child profile (use when first time creating child)
     @Insert
     void insertChild(ChildProfile childProfile);

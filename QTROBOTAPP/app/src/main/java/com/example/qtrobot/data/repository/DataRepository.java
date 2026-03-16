@@ -47,13 +47,46 @@ public class DataRepository {
         AppDatabase db = AppDatabase.getInstance(application);
         this.parentAccountDao = db.parentAccountDao();
         this.childProfileDao = db.childProfileDao();
-        this.backendApi = RetrofitClient.getInstance().getBackendApi();
+        // Pass context so RetrofitClient can attach the JWT auth header
+        this.backendApi = RetrofitClient.getInstance(application).getBackendApi();
         // This runs once when the app starts.
         // The Repository picks up its tools: Room DAO and Retrofit API.
     }
 
 
     // --- ParentAccount Methods ---
+
+    /**
+     * Upsert a Google-authenticated parent.
+     * If a ParentAccount with the same email already exists in Room, we reuse it
+     * (avoids duplicate rows on every login). Otherwise a new row is inserted.
+     * The callback always receives the local Room id so the caller can persist the session.
+     */
+    public void upsertGoogleParent(ParentAccount parentAccount, OnParentIdCallBack callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            if (parentAccount == null || parentAccount.email == null) {
+                Log.e("DataRepository", "upsertGoogleParent: parentAccount or email is null");
+                return;
+            }
+            ParentAccount existing = parentAccountDao.getParentByEmail(parentAccount.email);
+            long localId;
+            if (existing != null) {
+                // Update name / token fields in case they changed
+                existing.firstName    = parentAccount.firstName;
+                existing.lastName     = parentAccount.lastName;
+                existing.passwordToken = parentAccount.passwordToken;
+                existing.updatedAt    = System.currentTimeMillis();
+                existing.isDirty      = parentAccount.isDirty;
+                parentAccountDao.updateParentAccount(existing);
+                localId = existing.id;
+            } else {
+                localId = parentAccountDao.insertParent(parentAccount);
+            }
+            final long finalId = localId;
+            new Handler(Looper.getMainLooper()).post(() -> callback.onParentIdReceived(finalId));
+        });
+    }
+
     public void insertParent(ParentAccount parentAccount, OnParentIdCallBack callback) {
         // Using existing background thread executor from our AppDatabase class
         AppDatabase.databaseWriteExecutor.execute(() -> {
@@ -109,6 +142,11 @@ public class DataRepository {
 
     public LiveData<ChildProfile> getLocalChild() {
         return childProfileDao.getFirstChild();
+    }
+
+    /** Returns the first child scoped to the currently logged-in parent. */
+    public LiveData<ChildProfile> getChildForParent(long parentId) {
+        return childProfileDao.getChildByParentId(parentId);
     }
 
 

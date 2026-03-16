@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/page_border_background">
+
+    <ImageButton
+        android:id="@+id/go_back_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.13"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/solid_blue_rounded"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/go_back"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/comfort_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="How are you feeling about the dentist?"
+        android:gravity="center"
+        android:textColor="?attr/qtPrimary"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/go_back_button" />
+
+    <ScrollView
+        android:id="@+id/faces_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/comfort_title"
+        app:layout_constraintBottom_toTopOf="@+id/comfort_response"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/faces_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Happy -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="16dp" android:background="@drawable/rounded_pale_blue_black_border"
+                android:padding="12dp">
+                <ImageButton android:id="@+id/face_happy"
+                    android:layout_width="72dp" android:layout_height="72dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter" android:src="@drawable/happy_face"
+                    android:contentDescription="Happy" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:text="Happy"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- OK -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="16dp" android:background="@drawable/rounded_pale_blue_black_border"
+                android:padding="12dp">
+                <ImageButton android:id="@+id/face_less_happy"
+                    android:layout_width="72dp" android:layout_height="72dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter" android:src="@drawable/less_happy"
+                    android:contentDescription="Less Happy" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:text="OK"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Unsure -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="16dp" android:background="@drawable/rounded_pale_blue_black_border"
+                android:padding="12dp">
+                <ImageButton android:id="@+id/face_undecided"
+                    android:layout_width="72dp" android:layout_height="72dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter" android:src="@drawable/undecided"
+                    android:contentDescription="Undecided" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:text="Unsure"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Sad -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="16dp" android:background="@drawable/rounded_pale_blue_black_border"
+                android:padding="12dp">
+                <ImageButton android:id="@+id/face_sad"
+                    android:layout_width="72dp" android:layout_height="72dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter" android:src="@drawable/sad"
+                    android:contentDescription="Sad" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:text="Sad"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Anxious -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="@drawable/rounded_pale_blue_black_border"
+                android:padding="12dp">
+                <ImageButton android:id="@+id/face_anxious"
+                    android:layout_width="72dp" android:layout_height="72dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter" android:src="@drawable/anxious"
+                    android:contentDescription="Anxious" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:text="Anxious"
+                    android:textSize="20sp" android:textColor="@android:color/black" android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/comfort_response"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="?attr/qtPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

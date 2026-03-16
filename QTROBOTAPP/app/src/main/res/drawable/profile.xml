@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder avatar used in NewProfileActivity when no photo is set -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Background circle -->
+    <path
+        android:fillColor="#BDBDBD"
+        android:pathData="M60,60 m-60,0 a60,60 0 1,0 120,0 a60,60 0 1,0 -120,0" />
+
+    <!-- Head -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,30 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+
+    <!-- Body / shoulders -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,100 Q20,68 60,68 Q100,68 100,100 Z" />
+
+</vector>

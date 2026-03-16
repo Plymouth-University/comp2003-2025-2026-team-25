@@ -1,11 +1,14 @@
 package com.example.qtrobot;
 
 import android.content.Intent;
+import android.os.Build;
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qtrobot.data.repository.DataRepository;
@@ -29,6 +32,25 @@ public class SettingsActivity extends BaseActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+                // Show signed-in user details from the active session
+        SessionManager session = new SessionManager(this);
+        TextView userNameText  = findViewById(R.id.user_name_text);
+        TextView userEmailText = findViewById(R.id.user_email_text);
+        if (userNameText != null) {
+            String name = session.getParentName();
+            if (name != null && !name.isEmpty()) {
+                userNameText.setText(name);
+                userNameText.setVisibility(android.view.View.VISIBLE);
+            }
+        }
+        if (userEmailText != null) {
+            String email = session.getParentEmail();
+            if (email != null && !email.isEmpty()) {
+                userEmailText.setText(email);
+                userEmailText.setVisibility(android.view.View.VISIBLE);
+            }
+        }
+
         // Apply robot image theme
         ImageView robotImage = findViewById(R.id.qt_image);
         RobotImageHelper.applyRobot(robotImage, this);
@@ -36,6 +58,30 @@ public class SettingsActivity extends BaseActivity {
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) {
             goBackButton.setOnClickListener(v -> finish());
+        }
+
+        // Reminders switch — schedules/cancels daily brush notification
+        SwitchMaterial remindersSwitch = findViewById(R.id.reminders_switch);
+        if (remindersSwitch != null) {
+            android.content.SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+            boolean remindersOn = prefs.getBoolean("reminders_enabled", false);
+            remindersSwitch.setChecked(remindersOn);
+            remindersSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("reminders_enabled", isChecked).apply();
+                if (isChecked) {
+                    // Request POST_NOTIFICATIONS permission on Android 13+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100);
+                    }
+                    NotificationScheduler.schedule(SettingsActivity.this);
+                    android.widget.Toast.makeText(SettingsActivity.this,
+                            "Daily brush reminder set for 8:00 AM", android.widget.Toast.LENGTH_SHORT).show();
+                } else {
+                    NotificationScheduler.cancel(SettingsActivity.this);
+                    android.widget.Toast.makeText(SettingsActivity.this,
+                            "Reminders turned off", android.widget.Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         SwitchMaterial switchTheme = findViewById(R.id.switchTheme);
@@ -66,6 +112,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void signOut() {
+<<<<<<< Updated upstream
         // to clear Guest flag (when signed in as guest)
         getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
 
@@ -82,6 +129,16 @@ public class SettingsActivity extends BaseActivity {
             Intent intent = new Intent(SettingsActivity.this, WelcomeActivity.class);
 
             //clears the entire activity stack so users can't "Go Back" into the app
+=======
+        // Clear our session and reset the Retrofit client so the next
+        // login picks up a fresh auth token rather than the old one.
+        new SessionManager(this).clearSession();
+        com.example.qtrobot.data.remote.RetrofitClient.reset();
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(SettingsActivity.this, GoogleSignInActivity.class);
+>>>>>>> Stashed changes
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

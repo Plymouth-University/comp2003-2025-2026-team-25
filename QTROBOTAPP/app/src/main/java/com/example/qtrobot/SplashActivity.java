@@ -25,6 +25,7 @@ public class SplashActivity extends BaseActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+<<<<<<< Updated upstream
 
                 // Check Room DB on a background thread to see if a local account exists
                 AppDatabase.databaseWriteExecutor.execute(new Runnable() {
@@ -60,6 +61,27 @@ public class SplashActivity extends BaseActivity {
                         });
                     }
                 });
+=======
+                SessionManager session = new SessionManager(SplashActivity.this);
+
+                Intent intent;
+                if (session.isLoggedIn()) {
+                    // Active session exists — go straight to Home
+                    intent = new Intent(SplashActivity.this, HomeActivity.class);
+                } else {
+                    // Check Google's cached account as fallback
+                    GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SplashActivity.this);
+                    if (account != null) {
+                        // Google is signed in but our session is stale — let GoogleSignInActivity re-hydrate it
+                        intent = new Intent(SplashActivity.this, GoogleSignInActivity.class);
+                    } else {
+                        intent = new Intent(SplashActivity.this, GoogleSignInActivity.class);
+                    }
+                }
+
+                startActivity(intent);
+                finish();
+>>>>>>> Stashed changes
             }
         }, 800);
     }

@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
+    implementation("androidx.core:core:1.13.1")
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
@@ -51,9 +52,9 @@ dependencies {
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    
-    // Lifecycle & LiveData
-    implementation("androidx.lifecycle:lifecycle-livedata-core:2.8.7")
+
+    implementation("androidx.lifecycle:lifecycle-livedata:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
 
     // ZXing for QR Code generation
     implementation(libs.zxing)

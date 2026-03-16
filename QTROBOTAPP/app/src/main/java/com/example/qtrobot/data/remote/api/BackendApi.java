@@ -2,6 +2,7 @@ package com.example.qtrobot.data.remote.api;
 
 import com.example.qtrobot.data.remote.dto.ChildDto;
 import com.example.qtrobot.data.remote.dto.GetChildResponse;
+import com.example.qtrobot.data.remote.dto.QrHashResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -9,21 +10,16 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-//BackendApi is just a menu of available calls — Retrofit reads it and handles the actual HTTP work behind the scenes.
-
 public interface BackendApi {
-    // what to say to AWS (which URL endpoint to call):
-    @GET("children/{childId}")
-    // this is data you we will get back (the wrapper object):
-    Call<GetChildResponse> getChild(
-            // the ID we are asking for:
-            @Path("childId") String childId
-    );
 
-    // create a new child in AWS
+    @GET("children/{childId}")
+    Call<GetChildResponse> getChild(@Path("childId") String childId);
+
     @POST("children")
-    Call<GetChildResponse> createChild(
-            @Body ChildDto body
-    );
-   // @Body ChildDto body tells Retrofit to serialize the ChildDto object into JSON and send it in the request body.
+    Call<GetChildResponse> createChild(@Body ChildDto body);
+
+    // QR Code — calls /generate-hash/{userId} on the QR API server
+    // Returns raw_string (e.g. "parent_123:hash") which gets encoded as the QR code
+    @GET("generate-hash/{userId}")
+    Call<QrHashResponse> generateQrHash(@Path("userId") String userId);
 }

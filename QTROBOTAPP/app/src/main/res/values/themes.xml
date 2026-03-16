@@ -13,15 +13,19 @@
         <item name="qtOnPrimary">@color/white</item>
         <item name="qtCardBackground">@color/primary_blue</item>
         <item name="qtAccent">@color/primary_blue</item>
+        <item name="qtButtonColor">@color/primary_blue</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme_App_Pink" parent="Base.Theme.QTrobot">
-        <item name="qtPrimary">@color/primary_pink</item>
+        <item name="qtPrimary">@color/pink_theme_text</item><!-- Near-black so all text is readable -->
         <item name="qtContainer">@color/container_pink</item>
-        <item name="qtOnPrimary">@color/on_primary_pink</item>
+        <item name="qtOnPrimary">@color/pink_theme_text</item>
         <item name="qtCardBackground">@color/primary_pink</item>
         <item name="qtAccent">@color/primary_pink</item>
+        <item name="qtButtonColor">@color/primary_pink</item>
+        <item name="colorPrimary">@color/primary_pink</item><!-- Keep buttons/switches pink -->
+        <item name="android:statusBarColor">@color/primary_pink</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
