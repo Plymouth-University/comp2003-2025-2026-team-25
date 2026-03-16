@@ -1,0 +1,8 @@
+In order to get scripts to work on startup I have to:
+
++ Create bash scripts 
++ Initialise nodes on startup
++ Establish connection to backend
+
+Face tracking + QR scripts require camera node to be initiated
+Welcome greeting requires speech + gestures nodes to be initiated
