@@ -125,6 +125,7 @@ public class DataRepository {
         return childProfileDao.getChildByRemoteId(remoteId);
     }
 
+    // get only the first child method
     public LiveData<ChildProfile> getLocalChild() {
         return childProfileDao.getFirstChild();
     }
@@ -179,6 +180,8 @@ public class DataRepository {
         );
 
         // new data transfer object mapping for the AWS API (packing our data to be ready to send)
+        // dto. ... is exact name in AWS table
+        // child. ... is the exact name as local in Room DB
         ChildDto dto = new ChildDto();
         dto.childId = child.remoteId;
         dto.preferred_name = child.preferredName;

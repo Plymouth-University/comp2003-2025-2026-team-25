@@ -13,8 +13,12 @@ import retrofit2.http.Path;
 
 public interface BackendApi {
     // what to say to AWS (blueprint all URL endpoint to call):
+
+
+    @GET("children")
+    Call<GetChildResponse> getAllChildren();
     @GET("children/{childId}")
-    // this is data you we will get back (the wrapper object):
+    // this is data we will get back (the wrapper object):
     Call<GetChildResponse> getChild(
             // the ID we are asking for:
             @Path("childId") String childId
