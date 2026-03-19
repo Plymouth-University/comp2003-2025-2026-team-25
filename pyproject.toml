@@ -1,0 +1,24 @@
+[project]
+name = "qtrobot-project"
+version = "0.1.0"
+description = "COMP2003 QTrobot backend and related components"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = ["E", "F", "I"]
+ignore = []
+src = ["backend"]
+
+[tool.mypy]
+python_version = "3.11"
+plugins = []
+files = ["backend"]
+ignore_missing_imports = true
+strict_optional = false
+
