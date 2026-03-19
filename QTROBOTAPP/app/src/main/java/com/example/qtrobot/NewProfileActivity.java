@@ -46,7 +46,7 @@ public class NewProfileActivity extends BaseActivity {
         }
 
         // Initialize repository and views
-        dataRepository = new DataRepository(getApplication());
+        dataRepository = DataRepository.getInstance(getApplication());
         childNameInput = findViewById(R.id.child_name_input);
         childDobInput = findViewById(R.id.child_dob_input);
         continueButton = findViewById(R.id.continue_button);
@@ -79,7 +79,7 @@ public class NewProfileActivity extends BaseActivity {
 
         private void registerChildProfile() {
             String childName = childNameInput.getText().toString().trim();
-            String childDob = childDobInput.getText().toString().trim();
+//            String childDob = childDobInput.getText().toString().trim();
 
             // Data Validation
             if (isEmpty(childName)) {
@@ -90,7 +90,7 @@ public class NewProfileActivity extends BaseActivity {
             // --- Create the ChildProfile Entity ---
             ChildProfile newChild = new ChildProfile();
             newChild.preferredName = childName;
-            newChild.dateOfBirth = childDob;
+//            newChild.dateOfBirth = childDob;
             newChild.parentId = this.parentId;
 
             //other metadata

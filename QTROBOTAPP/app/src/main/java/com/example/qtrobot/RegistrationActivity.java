@@ -40,7 +40,7 @@ public class RegistrationActivity extends BaseActivity {
         setContentView(R.layout.activity_registration);
 
         // -- DB repository initializing --
-        dataRepository = new DataRepository(getApplication());
+        dataRepository = DataRepository.getInstance(getApplication());
 
         // -- UI initializing section --
         firstNameInput = findViewById(R.id.first_name_input);

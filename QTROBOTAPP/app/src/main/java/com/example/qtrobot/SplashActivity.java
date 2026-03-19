@@ -6,10 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
 
+import com.example.qtrobot.data.local.database.AppRoomDatabase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-import com.example.qtrobot.data.local.database.AppDatabase;
 import com.example.qtrobot.data.local.entity.ParentAccount;
 
 public class SplashActivity extends BaseActivity {
@@ -27,11 +27,11 @@ public class SplashActivity extends BaseActivity {
             public void run() {
 
                 // Check Room DB on a background thread to see if a local account exists
-                AppDatabase.databaseWriteExecutor.execute(new Runnable() {
+                AppRoomDatabase.databaseWriteExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         // Check local Room DB for an Email account
-                        ParentAccount parent = AppDatabase.getInstance(SplashActivity.this)
+                        ParentAccount parent = AppRoomDatabase.getDatabaseInstance(SplashActivity.this)
                                 .parentAccountDao().getSingleParent();
                         
                         // Check if Google sign in is active

@@ -8,55 +8,73 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.example.qtrobot.data.local.dao.ChildProfileDao;
+import com.example.qtrobot.data.local.dao.LearnProgressDao;
 import com.example.qtrobot.data.local.dao.ParentAccountDao;
-import com.example.qtrobot.data.local.database.AppDatabase;
+import com.example.qtrobot.data.local.database.AppRoomDatabase;
 import com.example.qtrobot.data.local.entity.ChildProfile;
 import com.example.qtrobot.data.local.entity.ParentAccount;
 
 import com.example.qtrobot.data.remote.RetrofitClient;
 import com.example.qtrobot.data.remote.api.BackendApi;
 import com.example.qtrobot.data.remote.dto.GetChildResponse;
-import com.example.qtrobot.data.repository.OnParentIdCallBack;
 import com.example.qtrobot.data.remote.dto.ChildDto;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Callback;
 
+// code reference https://google-developer-training.github.io/android-developer-fundamentals-course-concepts-v2/unit-4-saving-user-data/lesson-10-storing-data-with-room/10-1-c-room-livedata-viewmodel/10-1-c-room-livedata-viewmodel.html
+// code reference 2: https://stackoverflow.com/questions/64017799/how-to-use-executorservice-with-android-room
 
-
-// code reference: https://stackoverflow.com/questions/64017799/how-to-use-executorservice-with-android-room
-// Repository = the glue between remote and local data
 // Repository manages all data and operation, and the only class that should talk to DAOs.
 // Defines where the app data comes from (local or network)
+// Repository is to implement the logic for deciding whether to fetch data from a network or use results cached in the database.
 public class DataRepository {
 
-    // SECTION 1: the tools Repository "assistant" has
-
-    // <-- access to Room (local) -->
-    private final ParentAccountDao parentAccountDao;
+    private final ParentAccountDao parentAccountDao;  // access to Room (local)
     private final ChildProfileDao childProfileDao;
+    private final LearnProgressDao learnProgressDao;
+    private final BackendApi backendApi;    // access to AWS (remote)
+    public static DataRepository ourInstance;
 
-    // access to AWS (remote)
-    private final BackendApi backendApi;
 
-    // SECTION 2: SETTING UP REPOSITORY
+    // Private constructor - initializing: the DAOs, API and DB instance.
 
-    // Constructor gets the DAOs from the database instance.
-    // Passes the Application context to get the database instance.
-    public DataRepository(Application application) {
-        AppDatabase db = AppDatabase.getInstance(application);
+    // Constructor gets the DAOs from the database instance. Passes the Application context to get the database instance.
+    private DataRepository(Application application) {
+        AppRoomDatabase db = AppRoomDatabase.getDatabaseInstance(application);
         this.parentAccountDao = db.parentAccountDao();
         this.childProfileDao = db.childProfileDao();
+        this.learnProgressDao = db.learnProgressDao();
         this.backendApi = RetrofitClient.getInstance().getBackendApi();
         // This runs once when the app starts.
         // The Repository picks up its tools: Room DAO and Retrofit API.
     }
 
+    // static method to get the singleton instance
+    public static DataRepository getInstance(Application application) {
+        if (ourInstance == null) {
+            synchronized (DataRepository.class) {
+                if (ourInstance == null) {
+                    ourInstance = new DataRepository(application);
+                }
+            }
+        }
+        return ourInstance;
+    }
+    public static void init(Application application) {
+        if (ourInstance == null) {
+            ourInstance = new DataRepository(application);
+        }
+    }
+
+
 
     // --- ParentAccount Methods ---
+
+    // INSERT parent to Room (offline)
     public void insertParent(ParentAccount parentAccount, OnParentIdCallBack callback) {
-        // Using existing background thread executor from our AppDatabase class
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        // Using existing background thread executor from our AppRoomDatabase class
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             if(parentAccount!=null)
             {
                 //Clear existing profiles data
@@ -76,7 +94,7 @@ public class DataRepository {
     }
 
     public void clearAllLocalData() {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             parentAccountDao.deleteAllParents();
             childProfileDao.deleteAllChildren();
         });
@@ -86,8 +104,8 @@ public class DataRepository {
 
     // INSERT child to Room (offline)
     public void insertChild(final ChildProfile childProfile) {
-        // Using existing executor from our AppDatabase class
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        // Using existing executor from our AppRoomDatabase class
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             if(childProfile!=null)
             {
                 // delete previous data profile
@@ -102,7 +120,7 @@ public class DataRepository {
         });
     }
 
-    //READ/get child from Room (offline)
+    //READ/get child from Room (offline - cached logic)
     public LiveData<ChildProfile> getChild(String remoteId) {
         return childProfileDao.getChildByRemoteId(remoteId);
     }
@@ -111,6 +129,11 @@ public class DataRepository {
         return childProfileDao.getFirstChild();
     }
 
+
+
+    /*
+    * REMOTE/CLOUD logic and SYNC methods
+     */
 
     //SYNC: fetch up-to-date child data from AWS (via remote id)-> and save to Room
     public void refreshChild(String remoteChildId) {
@@ -123,7 +146,7 @@ public class DataRepository {
                    childProfile.remoteId = childDto.childId;
                    childProfile.parentRemoteId = childDto.parentId;
                    childProfile.preferredName = childDto.preferred_name;
-                   childProfile.dateOfBirth = childDto.date_of_birth;
+//                   childProfile.dateOfBirth = childDto.date_of_birth;
                    childProfile.avatarUri = childDto.avatar_uri;
                    childProfile.score = childDto.score;
                    childProfile.settingsFavouriteSong  = childDto.settings_favourite_song;
@@ -136,7 +159,7 @@ public class DataRepository {
                    childProfile.qr_string = response.body().qr_string;  //get QR string generated in AWS
 
                    // insert refreshed child object to Room
-                   AppDatabase.databaseWriteExecutor.execute(() -> {
+                   AppRoomDatabase.databaseWriteExecutor.execute(() -> {
                        childProfileDao.upsert(childProfile);
                    });
 
@@ -149,10 +172,9 @@ public class DataRepository {
             });
         }
 
-    // <-- code section generated by AI Claude -->
     // WRITE: Save child to Room immediately + send to AWS
     public void saveChild(ChildProfile child) {
-        AppDatabase.databaseWriteExecutor.execute(() ->
+        AppRoomDatabase.databaseWriteExecutor.execute(() ->
                 childProfileDao.upsert(child)
         );
 
@@ -160,7 +182,7 @@ public class DataRepository {
         ChildDto dto = new ChildDto();
         dto.childId = child.remoteId;
         dto.preferred_name = child.preferredName;
-        dto.date_of_birth = child.dateOfBirth;
+//        dto.date_of_birth = child.dateOfBirth;
         dto.avatar_uri = child.avatarUri;
         dto.score = child.score;
         dto.settings_favourite_song = child.settingsFavouriteSong;
@@ -181,7 +203,7 @@ public class DataRepository {
                     child.qr_string = response.body().qr_string;
                 }
                 //update locally
-                AppDatabase.databaseWriteExecutor.execute(() ->
+                AppRoomDatabase.databaseWriteExecutor.execute(() ->
                         childProfileDao.upsert(child)
                 );
             }
@@ -191,7 +213,7 @@ public class DataRepository {
                 Log.e("DataRepository", "saveChild failed: " + t.getMessage());
                 child.isDirty = true;
                 // update locally only
-                AppDatabase.databaseWriteExecutor.execute(() ->
+                AppRoomDatabase.databaseWriteExecutor.execute(() ->
                         childProfileDao.upsert(child)
                 );
             }

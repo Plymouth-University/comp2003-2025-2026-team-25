@@ -29,6 +29,9 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    buildFeatures {
+        dataBinding = true
+    }
 
 
     compileOptions {
@@ -51,9 +54,14 @@ dependencies {
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    
+
     // Lifecycle & LiveData
+    val lifecycleVersion = "2.10.0"
     implementation("androidx.lifecycle:lifecycle-livedata-core:2.8.7")
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel:${lifecycleVersion}")
+// LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata:${lifecycleVersion}")
 
     // ZXing for QR Code generation
     implementation(libs.zxing)

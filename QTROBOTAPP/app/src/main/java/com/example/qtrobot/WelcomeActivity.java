@@ -20,7 +20,7 @@ public class WelcomeActivity extends BaseActivity {
         setContentView(R.layout.activity_welcome);
 
         // Initializing repository
-        dataRepository = new DataRepository(getApplication());
+        dataRepository = DataRepository.getInstance(getApplication());
 
         // Apply robot image
         ImageView robotImage = findViewById(R.id.qtrobot_image);

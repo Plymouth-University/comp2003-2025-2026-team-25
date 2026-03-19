@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.qtrobot.qrcode.QrGenerator;
 import com.example.qtrobot.ui.viewmodel.ChildViewModel;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -39,6 +40,7 @@ public class QrScanPage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan_page);
 
+
         // Apply robot image theme
         ImageView robotImage = findViewById(R.id.qtrobot_image);
         RobotImageHelper.applyRobot(robotImage, this);
@@ -52,14 +54,27 @@ public class QrScanPage extends BaseActivity {
             backButton.setOnClickListener(v -> finish());
         }
 
-        // Generate and display QR
-        String userUuid = getOrCreateUuid();
-        Bitmap qrBitmap = generateQrCode(userUuid);
-        if (qrBitmap != null) {
-            qrCodeImageView.setImageBitmap(qrBitmap);
+//        // Generate and display QR
+//        String userUuid = getOrCreateUuid();
+//        Bitmap qrBitmap = generateQrCode(userUuid);
+//        if (qrBitmap != null) {
+//            qrCodeImageView.setImageBitmap(qrBitmap);
+//        }
+
+        //startTimer();
+
+        String qrString =
+                "f9f694f2-a217-48ac-b984-f527a7e530f7:5b01bdb74ca1775649572c26668c744224fc94633394c3b39d02edbfd0a35cb6";
+        QrGenerator generator = new QrGenerator();
+        try {
+            Bitmap qrBitmap = generator.generateQRCodeImage(qrString);
+            if (qrBitmap != null) {
+                qrCodeImageView.setImageBitmap(qrBitmap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        startTimer();
 
 
         /*

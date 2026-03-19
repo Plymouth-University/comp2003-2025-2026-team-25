@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 //BackendApi is just a menu of available calls — Retrofit reads it and handles the actual HTTP work behind the scenes.
 
 public interface BackendApi {
-    // what to say to AWS (which URL endpoint to call):
+    // what to say to AWS (blueprint all URL endpoint to call):
     @GET("children/{childId}")
     // this is data you we will get back (the wrapper object):
     Call<GetChildResponse> getChild(

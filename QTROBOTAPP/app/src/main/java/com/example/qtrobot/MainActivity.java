@@ -7,10 +7,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.example.qtrobot.data.local.database.AppRoomDatabase;
 import com.google.android.gms.common.SignInButton;
 import com.example.qtrobot.data.local.dao.ChildProfileDao;
 import com.example.qtrobot.data.local.dao.ParentAccountDao;
-import com.example.qtrobot.data.local.database.AppDatabase;
 
 public class MainActivity extends BaseActivity {
 
@@ -24,12 +24,12 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         //-- Room DB initialization (local variables since they are only used here) --
-        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+        AppRoomDatabase db = AppRoomDatabase.getDatabaseInstance(getApplicationContext());
         ParentAccountDao parentAccountDao = db.parentAccountDao();
         ChildProfileDao childProfileDao = db.childProfileDao();
 
         // use DB on background thread (for test)
-        AppDatabase.databaseWriteExecutor.execute(() -> {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             // this will just touch the DB so it’s created
             parentAccountDao.getSingleParent();
         });

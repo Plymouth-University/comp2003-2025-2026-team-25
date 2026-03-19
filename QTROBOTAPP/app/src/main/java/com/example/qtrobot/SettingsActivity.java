@@ -70,8 +70,8 @@ public class SettingsActivity extends BaseActivity {
         getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
 
         // Clear the Room Database user data using DataRepository
-        // We do this on a background thread via the executor in AppDatabase
-        DataRepository repository = new DataRepository(getApplication());
+        // We do this on a background thread via the executor in AppRoomDatabase
+        DataRepository repository = DataRepository.getInstance(getApplication());
 
         repository.clearAllLocalData();
 

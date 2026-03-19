@@ -9,14 +9,13 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.qtrobot.data.local.entity.ChildProfile;
-import com.example.qtrobot.data.local.entity.ParentAccount;
 
 import java.util.List;
 
 @Dao
 public interface ChildProfileDao {
     //@Query("SELECT * FROM child_profile LIMIT 1")
-    @Query("SELECT * FROM child_profile")
+    @Query("SELECT * FROM child_profile LIMIT 1")
     LiveData<ChildProfile> getSingleChild();
     // Note: LiveData Auto-updates UI when Room data changes — no polling, no manual refresh.
 
@@ -25,19 +24,20 @@ public interface ChildProfileDao {
 
     // If need to access by id:
     // @Query("SELECT * FROM child_profile WHERE id = :childId LIMIT 1")
-    @Query("SELECT * FROM child_profile WHERE id = :childId")
+    @Query("SELECT * FROM child_profile WHERE id = :childId LIMIT 1")
     LiveData<ChildProfile> getChildById(long childId);
 
-    @Query("SELECT * FROM child_profile WHERE remote_id = :remoteId")
+    @Query("SELECT * FROM child_profile WHERE remote_id = :remoteId LIMIT 1")
     LiveData<ChildProfile> getChildByRemoteId(String remoteId);
 
-    // get the child which needs to be synced to cloud
-    //@Query("SELECT * FROM child_profile WHERE is_dirty = 1 LIMIT 1")
-    @Query("SELECT * FROM child_profile WHERE is_dirty = 1")
-    ChildProfile getUnsyncedChild(); // no need for live data as used on background, not UI
 
     @Query("SELECT * FROM child_profile LIMIT 1")
     LiveData<ChildProfile> getFirstChild(); // single child assumption
+
+    // all children for a parent
+    @Query("SELECT * FROM child_profile WHERE parent_id = :parentId")
+    LiveData<List<ChildProfile>> getChildrenByParent(long parentId);
+
 
     // insert new child profile (use when first time creating child)
     @Insert
@@ -53,4 +53,8 @@ public interface ChildProfileDao {
 
     @Delete
     int deleteChild(ChildProfile childProfile);
+
+    @Query("SELECT * FROM child_profile WHERE is_dirty = 1")
+    List<ChildProfile> getUnsyncedChildren();
+
 }
