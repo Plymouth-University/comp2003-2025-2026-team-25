@@ -93,13 +93,10 @@
             android:name=".AfterAppointmentActivity"
             android:exported="false" />
 
-<<<<<<< Updated upstream
         <activity
-            android:name=".WelcomeActivity"
-=======
+            android:name=".WelcomeActivity"/>
         <receiver
             android:name=".BrushReminderReceiver"
->>>>>>> Stashed changes
             android:exported="false" />
 
     </application>

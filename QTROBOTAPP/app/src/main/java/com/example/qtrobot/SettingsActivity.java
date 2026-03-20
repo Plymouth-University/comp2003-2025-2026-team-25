@@ -112,33 +112,21 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void signOut() {
-<<<<<<< Updated upstream
-        // to clear Guest flag (when signed in as guest)
+        // Clear Guest flag
         getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
 
-        // Clear the Room Database user data using DataRepository
-        // We do this on a background thread via the executor in AppDatabase
+        // Clear the Room Database user data
         DataRepository repository = new DataRepository(getApplication());
-
         repository.clearAllLocalData();
+
+        // Clear our session and reset the Retrofit client
+        new SessionManager(this).clearSession();
+        com.example.qtrobot.data.remote.RetrofitClient.reset();
 
         // Clear Google Sign-In session
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
             Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
-            // Go back to the (Welcome activity)
-            Intent intent = new Intent(SettingsActivity.this, WelcomeActivity.class);
-
-            //clears the entire activity stack so users can't "Go Back" into the app
-=======
-        // Clear our session and reset the Retrofit client so the next
-        // login picks up a fresh auth token rather than the old one.
-        new SessionManager(this).clearSession();
-        com.example.qtrobot.data.remote.RetrofitClient.reset();
-
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SettingsActivity.this, GoogleSignInActivity.class);
->>>>>>> Stashed changes
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

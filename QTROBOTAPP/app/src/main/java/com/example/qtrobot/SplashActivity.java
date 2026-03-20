@@ -25,7 +25,6 @@ public class SplashActivity extends BaseActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-<<<<<<< Updated upstream
 
                 // Check Room DB on a background thread to see if a local account exists
                 AppDatabase.databaseWriteExecutor.execute(new Runnable() {
@@ -61,7 +60,6 @@ public class SplashActivity extends BaseActivity {
                         });
                     }
                 });
-=======
                 SessionManager session = new SessionManager(SplashActivity.this);
 
                 Intent intent;
@@ -81,7 +79,6 @@ public class SplashActivity extends BaseActivity {
 
                 startActivity(intent);
                 finish();
->>>>>>> Stashed changes
             }
         }, 800);
     }
