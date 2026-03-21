@@ -5,6 +5,10 @@
         <item name="colorPrimary">?attr/qtPrimary</item>
         <item name="colorOnPrimary">?attr/qtOnPrimary</item>
         <item name="colorPrimaryContainer">?attr/qtContainer</item>
+
+        <!-- Global Material button + card styles -->
+        <item name="materialButtonStyle">@style/Widget.QTrobot.Button.Primary</item>
+        <item name="cardViewStyle">@style/Widget.QTrobot.Card</item>
     </style>
 
     <style name="Theme_App_Blue" parent="Base.Theme.QTrobot">

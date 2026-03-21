@@ -4,31 +4,44 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
+import androidx.cardview.widget.CardView;
+
 public class LearnActivity extends BaseActivity {
+    private CardView cardArrival;
+    private CardView cardBefore;
+    private CardView cardDuring;
+    private CardView cardAfter;;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn);
+        cardArrival = findViewById(R.id.card_arrival);
+        cardBefore = findViewById(R.id.card_before_appointment);
+        cardDuring = findViewById(R.id.card_during_appointment);
+        cardAfter = findViewById(R.id.card_after_appointment);
+
+
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) {
             goBackButton.setOnClickListener(v -> finish());
         }
 
-        findViewById(R.id.arrival_button).setOnClickListener(v -> {
+        cardArrival.setOnClickListener(v -> {
             startActivity(new Intent(this, ArrivalActivity.class));
         });
 
-        findViewById(R.id.before_appt_button).setOnClickListener(v -> {
+        cardBefore.setOnClickListener(v -> {
             startActivity(new Intent(this, BeforeAppointmentActivity.class));
         });
 
-        findViewById(R.id.during_appt_button).setOnClickListener(v -> {
+        cardDuring.setOnClickListener(v -> {
             startActivity(new Intent(this, DuringAppointmentActivity.class));
         });
 
-        findViewById(R.id.after_appt_button).setOnClickListener(v -> {
+        cardAfter.setOnClickListener(v -> {
             startActivity(new Intent(this, AfterAppointmentActivity.class));
         });
     }

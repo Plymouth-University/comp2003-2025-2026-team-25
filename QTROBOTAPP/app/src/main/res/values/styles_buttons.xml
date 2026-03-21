@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.QTrobot.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <!-- Size / touch target -->
+        <item name="android:minHeight">64dp</item>
+        <item name="android:insetTop">8dp</item>
+        <item name="android:insetBottom">8dp</item>
+
+        <!-- Typography -->
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+
+        <!-- Colors (uses theme attributes) -->
+        <item name="backgroundTint">?attr/qtContainer</item>
+        <item name="android:textColor">?attr/qtPrimary</item>
+
+        <!-- Rounded everything -->
+        <item name="shapeAppearance">@style/Shape_QTrobot_ButtonRounded</item>
+
+        <!-- Material ripple (uses theme’s ripple by default) -->
+        <!-- No need to manually set selectableItemBackground for MaterialButton -->
+    </style>
+
+    <style name="Shape_QTrobot_ButtonRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="Widget.QTrobot.Button.SecondaryPill" parent="Widget.MaterialComponents.Button.TextButton">
+        parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:minHeight">52dp</item>
+        <item name="android:paddingStart">32dp</item>
+        <item name="android:paddingEnd">32dp</item>
+
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">?attr/qtPrimary</item>
+
+        <!-- keep your previous stroke -->
+        <item name="strokeColor">?attr/qtContainer</item>
+        <item name="strokeWidth">2dp</item>
+
+        <item name="shapeAppearance">@style/Shape_QTrobot_Pill</item>
+    </style>
+
+    <style name="Shape_QTrobot_Pill">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">999dp</item>
+    </style>
+
+</resources>
