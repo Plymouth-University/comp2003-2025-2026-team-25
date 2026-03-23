@@ -104,8 +104,12 @@ public class NewProfileActivity extends BaseActivity {
 
             // Goes to home screen
             Toast.makeText(this, "Child's Profile created!", Toast.LENGTH_SHORT).show();
-            Intent homeIntent = new Intent(NewProfileActivity.this, HomeActivity.class);
-            startActivity(homeIntent);
+            String authType = getIntent().getStringExtra("auth_type");
+            if ("email".equals(authType)) {
+                startActivity(new Intent(this, MainActivity.class)); // it is email user, go to login
+            } else {
+                startActivity(new Intent(this, HomeActivity.class)); // it is google user, go to home page
+            }
             finishAffinity(); // to finish this and the previous registration activity
     }
 }

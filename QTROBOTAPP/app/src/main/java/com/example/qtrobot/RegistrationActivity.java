@@ -46,7 +46,7 @@ public class RegistrationActivity extends BaseActivity {
         firstNameInput = findViewById(R.id.first_name_input);
         lastNameInput = findViewById(R.id.last_name_input);
         emailInput = findViewById(R.id.email_input);
-        dobInput = findViewById(R.id.dob_input);
+//        dobInput = findViewById(R.id.dob_input);
         passwordInput = findViewById(R.id.password_input);
         registerButton = findViewById(R.id.register_button);
 
@@ -103,11 +103,11 @@ public class RegistrationActivity extends BaseActivity {
         String firstName = firstNameInput.getText().toString().trim();
         String lastName = lastNameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
-        String dob = dobInput.getText().toString().trim();
+//        String dob = dobInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim(); // implement hash function later
 
         // Input validation
-        if (isEmpty(firstName) || isEmpty(lastName) || isEmpty(email) || isEmpty(dob) || isEmpty(password)) {
+        if (isEmpty(firstName) || isEmpty(lastName) || isEmpty(email) || isEmpty(password)) {
             Toast.makeText(this, "Please, fill all require fields", Toast.LENGTH_SHORT).show();
             return; //stop and exit the method
         }
@@ -117,7 +117,6 @@ public class RegistrationActivity extends BaseActivity {
         newParent.firstName = firstName;
         newParent.lastName = lastName;
         newParent.email = email;
-        newParent.dateOfBirth = dob;
         newParent.passwordToken = password;
 
         // other metadata settings
@@ -135,6 +134,7 @@ public class RegistrationActivity extends BaseActivity {
                 // Navigate to the NewProfileActivity to complete child's profile
                 Intent intent = new Intent(RegistrationActivity.this, NewProfileActivity.class);
                 intent.putExtra("PARENT_ID", parentId); // Pass the ID of parent to the child profile registration screen
+                intent.putExtra("auth_type", "email"); // to handle login screen later and avoid forwarding to google sign-in
                 startActivity(intent);
 
                 // finish the current activity

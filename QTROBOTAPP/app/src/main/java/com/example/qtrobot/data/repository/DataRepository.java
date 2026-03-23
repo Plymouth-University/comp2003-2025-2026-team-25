@@ -104,6 +104,21 @@ public class DataRepository {
         });
     }
 
+    // to login parent locally with email:
+    public void loginParent(String email, String password, OnLoginCallback callback){
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            ParentAccount parent = parentAccountDao.getParentByEmailAndPassword(email, password);
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (parent != null) {
+                    callback.onSuccess(parent);
+                    } else {
+                    callback.onFailure("Invalid email or password");
+                }
+            });
+        });
+    }
+
     // --- ChildProfile Methods ---
 
     // INSERT child to Room (offline)

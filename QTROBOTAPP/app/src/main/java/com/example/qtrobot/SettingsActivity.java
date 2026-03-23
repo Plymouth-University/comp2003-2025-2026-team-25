@@ -8,7 +8,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.qtrobot.data.local.entity.ParentAccount;
 import com.example.qtrobot.data.repository.DataRepository;
+import com.example.qtrobot.ui.viewmodel.ParentViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -69,11 +73,11 @@ public class SettingsActivity extends BaseActivity {
         // to clear Guest flag (when signed in as guest)
         getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
 
-        // Clear the Room Database user data using DataRepository
-        // We do this on a background thread via the executor in AppRoomDatabase
-        DataRepository repository = DataRepository.getInstance(getApplication());
+        // Clear the Room Database user data using Parent Account viewmodel
+        ParentViewModel parentViewModel = new ViewModelProvider(this).get(ParentViewModel.class);
 
-        repository.clearAllLocalData();
+        parentViewModel.logout();
+
 
         // Clear Google Sign-In session
         mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {

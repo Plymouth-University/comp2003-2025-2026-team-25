@@ -33,6 +33,10 @@ public interface ParentAccountDao {
     @Query("SELECT * FROM parent_account WHERE is_dirty = 1 LIMIT 1")
     ParentAccount getUnsyncedParent();
 
+    // For email login — find parent by email and password
+    @Query("SELECT * FROM parent_account WHERE email = :email AND password_token = :password LIMIT 1")
+    ParentAccount getParentByEmailAndPassword(String email, String password);
+
 
 
 

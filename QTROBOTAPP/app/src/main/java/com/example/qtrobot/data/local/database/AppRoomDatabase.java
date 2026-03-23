@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
                 ParentAccount.class,
                 ChildProfile.class,
                 LearnProgress.class
-        }, version = 5, exportSchema = false)
+        }, version = 6, exportSchema = false)
 
 public abstract class AppRoomDatabase extends RoomDatabase {
 

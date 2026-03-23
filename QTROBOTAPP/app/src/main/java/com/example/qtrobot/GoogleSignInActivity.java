@@ -13,6 +13,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
+import com.example.qtrobot.data.local.entity.ParentAccount;
+import com.example.qtrobot.data.repository.DataRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -198,15 +200,45 @@ public class GoogleSignInActivity extends BaseActivity {
         });
     }
 
+//    private void navigateToHome(GoogleSignInAccount account) {
+//        if (account != null && !isFinishing()) {
+//            Intent intent = new Intent(this, HomeActivity.class);
+//            intent.putExtra("user_name", account.getDisplayName());
+//            intent.putExtra("user_email", account.getEmail());
+//            intent.putExtra("auth_type", "google");
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
+
     private void navigateToHome(GoogleSignInAccount account) {
-        if (account != null && !isFinishing()) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra("user_name", account.getDisplayName());
-            intent.putExtra("user_email", account.getEmail());
-            startActivity(intent);
-            finish();
-        }
+        if (account == null || isFinishing()) return;
+
+        // saves google user to Room DB as a ParentAccount
+        ParentAccount parent = new ParentAccount();
+        parent.firstName = account.getGivenName();   // first name from Google
+        parent.lastName = account.getFamilyName();  // last name from Google
+        parent.email = account.getEmail();
+        parent.createdAt = System.currentTimeMillis();
+        parent.updatedAt = System.currentTimeMillis();
+        parent.isDirty = true;
+
+        // Set as logged-in user
+        getSharedPreferences("user_prefs", MODE_PRIVATE)
+                .edit()
+                .putBoolean("is_guest", false)
+                .apply();
+
+        // Save to Room DB then navigate to HomeActivity
+        Toast.makeText(this, "Welcome back, " + parent.firstName + "!", Toast.LENGTH_SHORT).show();
+        DataRepository.getInstance(getApplication())
+                .insertParent(parent, newParentId -> {
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
     }
+
 
     public interface ApiService {
         @POST("/auth/exchange-google-token")
