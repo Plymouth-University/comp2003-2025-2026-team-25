@@ -27,6 +27,15 @@
         <item name="cornerSize">24dp</item>
     </style>
 
+    <style name="Widget.QTrobot.Button.Google" parent="Widget.QTrobot.Button.Primary">
+        <!-- Override only what needs to change for the Google button -->
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="android:textColor">?attr/qtPrimary</item>
+        <item name="strokeColor">#DADCE0</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+
     <style name="Widget.QTrobot.Button.SecondaryPill" parent="Widget.MaterialComponents.Button.TextButton">
         parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:minHeight">52dp</item>

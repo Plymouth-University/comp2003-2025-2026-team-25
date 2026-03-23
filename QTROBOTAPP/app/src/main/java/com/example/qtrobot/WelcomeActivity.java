@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import com.google.android.material.button.MaterialButton;
 
 import com.google.android.gms.common.SignInButton;
 
@@ -15,6 +16,11 @@ public class WelcomeActivity extends BaseActivity {
     private static final String PREFS_NAME   = "user_prefs";
     private static final String KEY_IS_GUEST = "is_guest";
     private DataRepository dataRepository;
+    private MaterialButton emailLoginBtn;
+    private MaterialButton googleBtn;
+    private MaterialButton tryAppBtn;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +37,20 @@ public class WelcomeActivity extends BaseActivity {
         }
 
         // Email Login choice
-        Button emailLoginBtn = findViewById(R.id.btn_email_login);
+        emailLoginBtn = findViewById(R.id.btn_email_login);
         emailLoginBtn.setOnClickListener(v -> {
             setGuestStatus(false);
             startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
         });
 
         // Google Login choice
-        SignInButton googleBtn = findViewById(R.id.googleSignInButton);
+        googleBtn = findViewById(R.id.googleSignInButton);
         googleBtn.setOnClickListener(v -> {
             setGuestStatus(false);
             startActivity(new Intent(WelcomeActivity.this, GoogleSignInActivity.class));
         });
 
-        Button tryAppBtn = findViewById(R.id.btn_try_app);
+        tryAppBtn = findViewById(R.id.btn_try_app);
         if (tryAppBtn != null) {
             tryAppBtn.setOnClickListener(v -> {
                 // Save the guest status in shared preferences
