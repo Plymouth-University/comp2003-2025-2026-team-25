@@ -17,7 +17,7 @@ import androidx.room.Index;
                 )
                 //section IDs are managed via LearnSectionConstants
         },
-        indices = {@Index("child_id"), @Index("section_id")}
+        indices = {@Index("child_id"), @Index(value = ("section_id"), unique = true) }
 )
 public class LearnProgress {
 

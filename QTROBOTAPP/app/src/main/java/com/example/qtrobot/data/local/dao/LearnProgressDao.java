@@ -1,5 +1,6 @@
 package com.example.qtrobot.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -17,11 +18,11 @@ public interface LearnProgressDao {
     // if there is an existing entry.
     // The default action is ABORT.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(LearnProgress childProgress);
+    void insert(LearnProgress progress);
 
     // Update multiple entries with one call. (can pass multiple object IDs at once for update)
     @Update
-    void updateProgress(LearnProgress childProgress);
+    void updateProgress(LearnProgress progress);
 
     // Delete multiple entries with one call
     @Query("DELETE FROM learn_progress")
@@ -50,5 +51,17 @@ public interface LearnProgressDao {
     // Fetch all records that need pushing to DynamoDB
     @Query("SELECT * FROM learn_progress WHERE is_dirty = 1")
     List<LearnProgress> getDirtyRecords();
+
+    // updates or inserts if does not exists
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void upsert(LearnProgress progress);
+
+    // LiveData, takes a new list whenever any progress row for this child changes
+    @Query("SELECT * FROM learn_progress WHERE child_id = :childId AND is_completed = 1")
+    LiveData<List<LearnProgress>> getCompletedSectionsLive(long childId);
+
+    // Returns only completed sections for a child — plain List, no LiveData
+    @Query("SELECT * FROM learn_progress WHERE child_id = :childId AND is_completed = 1")
+    List<LearnProgress> getCompletedSectionsList(long childId);
 
 }

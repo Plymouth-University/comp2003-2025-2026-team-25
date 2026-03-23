@@ -97,6 +97,7 @@
                     android:padding="8dp"
                     android:src="@drawable/ic_ondemand_video_24"
                     app:tint="@android:color/white" />
+
             </FrameLayout>
 
             <LinearLayout
@@ -124,6 +125,14 @@
                     android:text="Short video about what happens as soon as you walk through the door."
                     android:textSize="14sp" />
             </LinearLayout>
+            <ImageView
+                android:id="@+id/badge_arrival"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_check_circle_24"
+                app:tint="?attr/qtPrimary"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -195,6 +204,15 @@
                     android:text="Getting Ready for Your Visit. Find out what you’ll do while you wait to see the dentist."
                     android:textSize="14sp" />
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/badge_before"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_check_circle_24"
+                app:tint="?attr/qtPrimary"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -266,6 +284,14 @@
                     android:text="Meet your Robot and learn what the dentist do to check your teeth."
                     android:textSize="14sp" />
             </LinearLayout>
+            <ImageView
+                android:id="@+id/badge_during"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_check_circle_24"
+                app:tint="?attr/qtPrimary"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -337,6 +363,14 @@
                     android:text="Learn what happens at the end and how to say goodbye."
                     android:textSize="14sp" />
             </LinearLayout>
+            <ImageView
+                android:id="@+id/badge_after"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_check_circle_24"
+                app:tint="?attr/qtPrimary"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

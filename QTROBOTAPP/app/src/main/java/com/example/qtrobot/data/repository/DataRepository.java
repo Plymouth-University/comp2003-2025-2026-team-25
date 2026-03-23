@@ -12,12 +12,16 @@ import com.example.qtrobot.data.local.dao.LearnProgressDao;
 import com.example.qtrobot.data.local.dao.ParentAccountDao;
 import com.example.qtrobot.data.local.database.AppRoomDatabase;
 import com.example.qtrobot.data.local.entity.ChildProfile;
+import com.example.qtrobot.data.local.entity.LearnProgress;
 import com.example.qtrobot.data.local.entity.ParentAccount;
 
 import com.example.qtrobot.data.remote.RetrofitClient;
 import com.example.qtrobot.data.remote.api.BackendApi;
 import com.example.qtrobot.data.remote.dto.GetChildResponse;
 import com.example.qtrobot.data.remote.dto.ChildDto;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Callback;
@@ -222,5 +226,50 @@ public class DataRepository {
             }
         });
     }
+
+    /*
+    * LearnProgress table methods
+    * */
+
+    // Functions for LOCAL Room: use to read/write locally
+
+    public void recordProgress(long childId, String sectionId) {
+        // run in background thread
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            // check if record already exists
+            LearnProgress existing = learnProgressDao.findProgress(childId, sectionId);
+
+            if (existing != null && existing.completed) {
+                return;     // Already recorded in Room, do nothing
+            }
+
+            // ternary code
+            LearnProgress progress = (existing != null) ? existing : new LearnProgress();
+            progress.childId = childId;
+            progress.sectionId = sectionId;
+            progress.completed = true;
+            progress.updatedAt = System.currentTimeMillis();
+            progress.isDirty = true;    // flags that it needs cloud sync
+
+            // if record does not exist, set time creation
+            if (existing == null) {
+                progress.createdAt = System.currentTimeMillis();
+            }
+
+            learnProgressDao.upsert(progress);      //insert or update records in Room
+
+        });
+    }
+
+    // method to return data of all completed sessions for a single child
+    public LiveData<List<LearnProgress>> getCompletedSections(long childId) {
+        return learnProgressDao.getCompletedSectionsLive(childId);
+    }
+
+    // plain list
+    public List<LearnProgress> getCompletedSectionsList(long childId) {
+        return learnProgressDao.getCompletedSectionsList(childId);
+    }
+
 
 }
