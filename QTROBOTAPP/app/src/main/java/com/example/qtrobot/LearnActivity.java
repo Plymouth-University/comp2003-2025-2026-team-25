@@ -1,8 +1,14 @@
 package com.example.qtrobot;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import nl.dionsegijn.konfetti.core.models.Size;
+
+import android.os.Handler;
+import android.os.Looper;
+
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +23,12 @@ import com.example.qtrobot.data.repository.DataRepository;
 import com.example.qtrobot.ui.viewmodel.ChildViewModel;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class LearnActivity extends BaseActivity {
 
@@ -27,6 +39,10 @@ public class LearnActivity extends BaseActivity {
     private ChildViewModel childViewModel;
     private long currentChildId = -1;
     private boolean isGuest = true;
+    private String pendingSectionId = null;
+    private KonfettiView konfettiView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +61,9 @@ public class LearnActivity extends BaseActivity {
         badgeAfter = findViewById(R.id.badge_after);
 
         progressLabel = findViewById(R.id.tutorial_progress_label);
+
+        konfettiView = findViewById(R.id.konfettiView);
+
 
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) {
@@ -81,35 +100,39 @@ public class LearnActivity extends BaseActivity {
 
         // --- Card click listeners ---
         cardArrival.setOnClickListener(v -> {
-            onCardTapped(LearnSectionConstants.SECTION_ARRIVAL);
+            pendingSectionId = LearnSectionConstants.SECTION_ARRIVAL;
             startActivity(new Intent(this, ArrivalActivity.class));
         });
 
         cardBefore.setOnClickListener(v -> {
-            onCardTapped(LearnSectionConstants.SECTION_BEFORE);
+            pendingSectionId = LearnSectionConstants.SECTION_BEFORE;
             startActivity(new Intent(this, BeforeAppointmentActivity.class));
         });
 
         cardDuring.setOnClickListener(v -> {
-            onCardTapped(LearnSectionConstants.SECTION_DURING);
+            pendingSectionId = LearnSectionConstants.SECTION_DURING;
             startActivity(new Intent(this, DuringAppointmentActivity.class));
         });
 
         cardAfter.setOnClickListener(v -> {
-            onCardTapped(LearnSectionConstants.SECTION_AFTER);
+            pendingSectionId = LearnSectionConstants.SECTION_AFTER;
             startActivity(new Intent(this, AfterAppointmentActivity.class));
         });
     }
 
-    // Called every time a card is tapped
-    private void onCardTapped(String sectionId) {
-        // Save to Room only for logged-in users
-        if (!isGuest && currentChildId != -1) {
-            childViewModel.recordSectionProgress(currentChildId, sectionId);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (pendingSectionId != null) {
+            if (!isGuest && currentChildId != -1) {
+                childViewModel.recordSectionProgress(currentChildId, pendingSectionId);
+            }
+            showBadge(pendingSectionId);
+            pendingSectionId = null;
+            updateProgressLabel();
+
         }
-        // Show badge and update counter for everyone
-        showBadge(sectionId);
-        updateProgressLabel();
     }
 
     // Makes the checkmark badge visible on the correct card
@@ -133,5 +156,30 @@ public class LearnActivity extends BaseActivity {
         if (badgeDuring.getVisibility() == ImageView.VISIBLE) count++;
         if (badgeAfter.getVisibility() == ImageView.VISIBLE) count++;
         progressLabel.setText(count + " of 4 videos completed");
+
+        // if all completed and not navigating anywhere:
+        if (count == 4 && pendingSectionId == null) {
+            showCompletionCelebration(); // Show confetti and congrats alert
+        }
+    }
+
+    private void showCompletionCelebration() {
+        Party party = new PartyFactory(new Emitter(Long.MAX_VALUE, TimeUnit.SECONDS).perSecond(80))
+                .spread(360)
+                .sizes(new Size(12, 4f, 1f))
+                .build();
+        konfettiView.start(party);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("🎉 Well Done! ")
+                    .setMessage("You've completed all the lessons!\nYou're ready for your dentist visit!")
+                    //.setIcon(R.drawable.qtrobot)
+                    .setPositiveButton("Thanks!", (dialog, which) -> {
+                            konfettiView.reset();
+                            dialog.dismiss();
+                    })
+                    .setOnDismissListener(dialog -> konfettiView.reset())
+                    .show(); }, 1500);
+
     }
 }
