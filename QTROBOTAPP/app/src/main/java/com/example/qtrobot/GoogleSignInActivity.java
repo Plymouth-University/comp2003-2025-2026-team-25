@@ -233,7 +233,8 @@ public class GoogleSignInActivity extends BaseActivity {
         Toast.makeText(this, "Welcome back, " + parent.firstName + "!", Toast.LENGTH_SHORT).show();
         DataRepository.getInstance(getApplication())
                 .insertParent(parent, newParentId -> {
-                    Intent intent = new Intent(this, HomeActivity.class);
+                    Intent intent = new Intent(this, NewProfileActivity.class);
+                    intent.putExtra(NewProfileActivity.PARENT_ID_KEY, newParentId);
                     startActivity(intent);
                     finish();
                 });

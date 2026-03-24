@@ -20,7 +20,7 @@ public class NewProfileActivity extends BaseActivity {
 
     // -- View components
     private EditText childNameInput;
-    private EditText childDobInput;
+    //private EditText childDobInput;
     private Button continueButton;
 
     // DataRepository and Parent ID
@@ -48,7 +48,7 @@ public class NewProfileActivity extends BaseActivity {
         // Initialize repository and views
         dataRepository = DataRepository.getInstance(getApplication());
         childNameInput = findViewById(R.id.child_name_input);
-        childDobInput = findViewById(R.id.child_dob_input);
+//        childDobInput = findViewById(R.id.child_dob_input);
         continueButton = findViewById(R.id.continue_button);
 
         ImageView robotImage = findViewById(R.id.qtrobot_image);
