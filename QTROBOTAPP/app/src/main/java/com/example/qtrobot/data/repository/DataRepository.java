@@ -285,6 +285,9 @@ public class DataRepository {
     public List<LearnProgress> getCompletedSectionsList(long childId) {
         return learnProgressDao.getCompletedSectionsList(childId);
     }
+    public LiveData<List<ChildProfile>> getChildrenByParent(long parentId) {
+        return childProfileDao.getChildrenByParent(parentId);
+    }
 
 
 }

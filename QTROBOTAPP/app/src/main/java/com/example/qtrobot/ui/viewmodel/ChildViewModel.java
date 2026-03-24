@@ -56,4 +56,8 @@ public class ChildViewModel extends AndroidViewModel {
     public void recordSectionProgress(long childId, String sectionId) {
         repository.recordProgress(childId, sectionId);
     }
+
+    public LiveData<List<ChildProfile>> getChildrenByParent(long parentId) {
+        return repository.getChildrenByParent(parentId);
+    }
 }
