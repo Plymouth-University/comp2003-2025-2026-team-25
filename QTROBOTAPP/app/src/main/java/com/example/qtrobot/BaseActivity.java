@@ -34,6 +34,8 @@ public abstract class BaseActivity extends AppCompatActivity {
      * as its background to use pink instead.
      */
     private void tintButtonsPink(View view) {
+        if ("no_tint".equals(view.getTag())) return;
+
         int pinkColor = ContextCompat.getColor(this, R.color.primary_pink);
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;

@@ -26,6 +26,7 @@ public class BeforeAppointmentActivity extends BaseActivity {
         List<CardModel> cards = new ArrayList<>();
         cards.add(new CardModel("Before your appointment", "The dental team prepare everything for you", R.drawable.qt_robot_observing_staff));
         cards.add(new CardModel("Waiting Room", "This time helps make sure your visit goes smoothly", R.drawable.qt_in_dentist_room));
+        cards.add(new CardModel("Watch the video", "A short video about what to expect before your appointment"));
 
         CardAdapter adapter = new CardAdapter(cards);
         if (viewPager != null) {

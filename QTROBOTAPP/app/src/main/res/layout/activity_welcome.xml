@@ -22,14 +22,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2" /> <!-- Wider margins for tablet -->
+        app:layout_constraintGuide_percent="0.15" /> <!-- Adjusted for more space -->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.85" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/welcome_card"
@@ -47,10 +47,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="32dp">
+            android:padding="24dp"> <!-- Reduced padding for more button space -->
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_email_login"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
@@ -60,10 +60,13 @@
                 android:textColor="?attr/qtPrimary"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                app:cornerRadius="15dp" />
+                android:tag="no_tint"
+                app:cornerRadius="15dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
 
-            <com.google.android.gms.common.SignInButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/googleSignInButton"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
@@ -74,17 +77,21 @@
                 android:textColor="#757575"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:tag="no_tint"
                 app:cornerRadius="15dp"
                 app:icon="@mipmap/ic_google_logo"
                 app:iconGravity="textStart"
-                app:iconSize="48dp"
+                app:iconSize="28dp"
                 app:iconPadding="12dp"
                 app:iconTint="@null"
                 app:strokeColor="#DADCE0"
-                app:strokeWidth="1dp" />
+                app:strokeWidth="1dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp" />
 
             <!-- Guest -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_try_app"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
@@ -95,7 +102,10 @@
                 android:textColor="?attr/qtPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:cornerRadius="15dp" />
+                android:tag="no_tint"
+                app:cornerRadius="15dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qtrobot.ui.viewmodel.ChildViewModel;
@@ -18,9 +19,11 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Session guard
+        // Session guard — allow logged in users and guests
         SessionManager session = new SessionManager(this);
-        if (!session.isLoggedIn()) {
+        boolean isGuest = getSharedPreferences("user_prefs", MODE_PRIVATE)
+                .getBoolean("is_guest", false);
+        if (!session.isLoggedIn() && !isGuest) {
             Intent intent = new Intent(this, GoogleSignInActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -36,13 +39,19 @@ public class HomeActivity extends BaseActivity {
         TextView greetingText = findViewById(R.id.greeting_text);
         if (greetingText != null) {
             ChildViewModel viewModel = new ViewModelProvider(this).get(ChildViewModel.class);
-            viewModel.setParentId(session.getParentId());
-            viewModel.getChildForCurrentParent().observe(this, child -> {
+            LiveData<com.example.qtrobot.data.local.entity.ChildProfile> childLiveData;
+            if (isGuest) {
+                // Guest users have no parentId — just get first child from DB
+                childLiveData = viewModel.getChildFromRoom();
+            } else {
+                viewModel.setParentId(session.getParentId());
+                childLiveData = viewModel.getChildForCurrentParent();
+            }
+            childLiveData.observe(this, child -> {
                 if (child != null && child.preferredName != null && !child.preferredName.isEmpty()) {
                     greetingText.setText(getString(R.string.hi_greeting, child.preferredName));
                     greetingText.setVisibility(View.VISIBLE);
                 } else {
-                    // Fallback to parent's Google name if no child yet
                     String parentName = session.getParentName();
                     if (parentName != null && !parentName.isEmpty()) {
                         greetingText.setText(getString(R.string.hi_greeting, parentName));

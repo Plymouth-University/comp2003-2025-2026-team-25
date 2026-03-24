@@ -89,6 +89,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/countdown_timer" />
 
+    <Button
+        android:id="@+id/btn_generate_qr"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Generate QR Code"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countdown_timer" />
+
     <ImageView
         android:id="@+id/qtrobot_image"
         android:layout_width="0dp"
@@ -100,6 +113,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/countdown_timer" />
+        app:layout_constraintTop_toBottomOf="@id/btn_generate_qr" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

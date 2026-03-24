@@ -26,6 +26,7 @@ public class ArrivalActivity extends BaseActivity {
         List<CardModel> cards = new ArrayList<>();
         cards.add(new CardModel("Welcome!", "When you arrive at the clinic you will be welcomed by our team", R.drawable.qt_robot_arriving));
         cards.add(new CardModel("Checking In", "You may wait for a short time before your appointment begins", R.drawable.qt_waiting_room));
+        cards.add(new CardModel("Watch the video", "A short video about what to expect on arrival"));
 
         CardAdapter adapter = new CardAdapter(cards);
         if (viewPager != null) {

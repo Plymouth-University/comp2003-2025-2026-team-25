@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.qtrobot.data.local.database.AppDatabase;
+import com.example.qtrobot.data.local.entity.ChildProfile;
+
 public class ComfortActivity extends BaseActivity {
 
     @Override
@@ -17,33 +20,52 @@ public class ComfortActivity extends BaseActivity {
 
         TextView response = findViewById(R.id.comfort_response);
 
-        // Each face button shows a friendly response when tapped
-        // Functionality is limited for now — responses can be expanded later
-
         ImageButton faceHappy = findViewById(R.id.face_happy);
-        if (faceHappy != null) faceHappy.setOnClickListener(v ->
-                showResponse(response, "That's brilliant! We're so happy to hear that! 😊"));
+        if (faceHappy != null) faceHappy.setOnClickListener(v -> {
+            saveMood("HAPPY");
+            showResponse(response, "That's brilliant! We're so happy to hear that! 😊");
+        });
 
         ImageButton faceLessHappy = findViewById(R.id.face_less_happy);
-        if (faceLessHappy != null) faceLessHappy.setOnClickListener(v ->
-                showResponse(response, "That's okay! We'll make sure you feel comfortable."));
+        if (faceLessHappy != null) faceLessHappy.setOnClickListener(v -> {
+            saveMood("OK");
+            showResponse(response, "That's okay! We'll make sure you feel comfortable.");
+        });
 
         ImageButton faceUndecided = findViewById(R.id.face_undecided);
-        if (faceUndecided != null) faceUndecided.setOnClickListener(v ->
-                showResponse(response, "Not sure? That's totally fine — we're here to help!"));
+        if (faceUndecided != null) faceUndecided.setOnClickListener(v -> {
+            saveMood("UNSURE");
+            showResponse(response, "Not sure? That's totally fine — we're here to help!");
+        });
 
         ImageButton faceSad = findViewById(R.id.face_sad);
-        if (faceSad != null) faceSad.setOnClickListener(v ->
-                showResponse(response, "We understand. We'll take good care of you."));
+        if (faceSad != null) faceSad.setOnClickListener(v -> {
+            saveMood("SAD");
+            showResponse(response, "We understand. We'll take good care of you.");
+        });
 
         ImageButton faceAnxious = findViewById(R.id.face_anxious);
-        if (faceAnxious != null) faceAnxious.setOnClickListener(v ->
-                showResponse(response, "It's okay to feel nervous. We'll go at your pace."));
+        if (faceAnxious != null) faceAnxious.setOnClickListener(v -> {
+            saveMood("ANXIOUS");
+            showResponse(response, "It's okay to feel nervous. We'll go at your pace.");
+        });
+
     }
 
     private void showResponse(TextView responseView, String message) {
         if (responseView == null) return;
         responseView.setText(message);
         responseView.setVisibility(View.VISIBLE);
+    }
+
+    private void saveMood(String mood) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            ChildProfile child = AppDatabase.getInstance(this)
+                    .childProfileDao().getFirstChildSync();
+            if (child != null) {
+                AppDatabase.getInstance(this).childProfileDao()
+                        .updateChildMood(child.id, mood, System.currentTimeMillis());
+            }
+        });
     }
 }

@@ -27,6 +27,7 @@ public class DuringAppointmentActivity extends BaseActivity {
         cards.add(new CardModel("The dentist", "Will explain what they are doing before they begin", R.drawable.qt_dentist_explain));
         cards.add(new CardModel("During your appointment", "You'll sit comfortably in the dental chair", R.drawable.qt_on_dentist_table));
         cards.add(new CardModel("Checking Teeth", "The dentist will count your teeth and make sure they're strong.", R.drawable.qt_getting_teeth_count));
+        cards.add(new CardModel("Watch the video", "A short video about what happens during your appointment"));
 
         CardAdapter adapter = new CardAdapter(cards);
         if (viewPager != null) {

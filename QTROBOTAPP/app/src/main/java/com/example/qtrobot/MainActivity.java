@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.google.android.gms.common.SignInButton;
+import android.widget.Button;
 import com.example.qtrobot.data.local.dao.ChildProfileDao;
 import com.example.qtrobot.data.local.dao.ParentAccountDao;
 import com.example.qtrobot.data.local.database.AppDatabase;
@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity {
 
 
         // Google Sign-In button — primary auth path
-        SignInButton googleSignInButton = findViewById(R.id.googleSignInButton);
+        Button googleSignInButton = findViewById(R.id.googleSignInButton);
         if (googleSignInButton != null) {
             googleSignInButton.setOnClickListener(v ->
                     startActivity(new Intent(MainActivity.this, GoogleSignInActivity.class)));

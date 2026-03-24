@@ -30,7 +30,7 @@ public class ChildProfile {
 
     @SerializedName("parentId")
     @ColumnInfo(name = "parent_id")
-    public long parentId;   // FK -> ParentAccount.id
+    public Long parentId;   // FK -> ParentAccount.id (nullable for guest users)
 
     @ColumnInfo(name = "parent_remote_id")
     public String parentRemoteId;

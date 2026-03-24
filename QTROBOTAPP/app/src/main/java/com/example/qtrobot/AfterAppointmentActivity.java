@@ -27,6 +27,7 @@ public class AfterAppointmentActivity extends BaseActivity {
         cards.add(new CardModel("The dentist", "Will talk to you about next steps", R.drawable.qt_next_steps));
         cards.add(new CardModel("You are welcome", "To ask questions at any time", R.drawable.farewell_qt));
         cards.add(new CardModel("Thank you!", "For taking the time to learn with me today", R.drawable.qt_thanks));
+        cards.add(new CardModel("Watch the video", "A short video about what happens after your appointment"));
 
         CardAdapter adapter = new CardAdapter(cards);
         if (viewPager != null) {

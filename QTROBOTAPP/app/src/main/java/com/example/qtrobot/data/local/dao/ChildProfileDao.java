@@ -39,6 +39,12 @@ public interface ChildProfileDao {
     @Query("SELECT * FROM child_profile LIMIT 1")
     LiveData<ChildProfile> getFirstChild(); // single child assumption
 
+    @Query("SELECT * FROM child_profile LIMIT 1")
+    ChildProfile getFirstChildSync(); // synchronous, for background thread use
+
+    @Query("UPDATE child_profile SET settings_preferred_greeting = :mood, updated_at = :updatedAt, is_dirty = 1 WHERE id = :childId")
+    void updateChildMood(long childId, String mood, long updatedAt);
+
     /** Returns the first child belonging to the given local parent id. */
     @Query("SELECT * FROM child_profile WHERE parent_id = :parentId LIMIT 1")
     LiveData<ChildProfile> getChildByParentId(long parentId);

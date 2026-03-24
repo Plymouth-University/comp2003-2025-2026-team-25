@@ -118,6 +118,13 @@ public class DataRepository {
     // --- ChildProfile Methods ---
 
     // INSERT child to Room (offline)
+    public void updateChildMood(long childId, String mood) {
+        AppDatabase.databaseWriteExecutor.execute(() ->
+                childProfileDao.updateChildMood(childId, mood, System.currentTimeMillis())
+        );
+    }
+
+    // INSERT child to Room (offline)
     public void insertChild(final ChildProfile childProfile) {
         // Using existing executor from our AppDatabase class
         AppDatabase.databaseWriteExecutor.execute(() -> {

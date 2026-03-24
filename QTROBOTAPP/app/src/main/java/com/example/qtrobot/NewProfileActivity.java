@@ -37,11 +37,7 @@ public class NewProfileActivity extends BaseActivity {
         if (parentId == -1) {
             parentId = new SessionManager(this).getParentId();
         }
-        if (parentId == -1) {
-            Toast.makeText(this, "Error: No parent account found.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        // parentId == -1 is allowed for guest users — only set FK for real accounts
 
         dataRepository = new DataRepository(getApplication());
         childNameInput = findViewById(R.id.child_name_input);
@@ -106,19 +102,27 @@ public class NewProfileActivity extends BaseActivity {
         ChildProfile newChild = new ChildProfile();
         newChild.preferredName = childName;
         newChild.dateOfBirth   = childDob;
-        newChild.parentId      = this.parentId;
+        if (this.parentId != -1) {
+            newChild.parentId = this.parentId;
+        }
         newChild.isDirty       = true;
         newChild.createdAt     = System.currentTimeMillis();
         newChild.updatedAt     = System.currentTimeMillis();
 
-        dataRepository.insertChild(newChild);
+        // Insert child then navigate only after DB write is confirmed
+        com.example.qtrobot.data.local.database.AppDatabase.databaseWriteExecutor.execute(() -> {
+            com.example.qtrobot.data.local.database.AppDatabase.getInstance(this)
+                    .childProfileDao().insertChild(newChild);
 
-        // Mark that this parent now has a child profile
-        new SessionManager(this).setHasChildProfile(true);
+            // Mark that this parent now has a child profile
+            new SessionManager(this).setHasChildProfile(true);
 
-        Toast.makeText(this, "Profile created!", Toast.LENGTH_SHORT).show();
-        Intent homeIntent = new Intent(NewProfileActivity.this, HomeActivity.class);
-        startActivity(homeIntent);
-        finishAffinity();
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Profile created!", Toast.LENGTH_SHORT).show();
+                Intent homeIntent = new Intent(NewProfileActivity.this, HomeActivity.class);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(homeIntent);
+            });
+        });
     }
 }

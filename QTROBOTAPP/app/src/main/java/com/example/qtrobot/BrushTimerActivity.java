@@ -93,6 +93,7 @@ public class BrushTimerActivity extends BaseActivity {
                 stopMusic();
                 if (titleText != null) titleText.setText("You did it! Well done!");
                 if (timerText  != null) timerText.setText("00:00");
+                recordBrushComplete();
             }
         }.start();
 
@@ -210,6 +211,38 @@ public class BrushTimerActivity extends BaseActivity {
         } catch (Exception e) {
             Log.e("BrushTimer", "Error stopping speech", e);
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // Streak recording — only called when timer completes fully
+    // -----------------------------------------------------------------------
+
+    private void recordBrushComplete() {
+        android.content.SharedPreferences prefs =
+                getSharedPreferences("brush_prefs", MODE_PRIVATE);
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                .format(new java.util.Date());
+        String lastDate = prefs.getString("last_brush_date", "");
+        int streak = prefs.getInt("brush_streak", 0);
+
+        if (today.equals(lastDate)) {
+            return; // already brushed today, don't double count
+        }
+
+        long yesterdayMillis = System.currentTimeMillis() - 86_400_000L;
+        String yesterday = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                .format(new java.util.Date(yesterdayMillis));
+
+        if (lastDate.equals(yesterday)) {
+            streak = Math.min(streak + 1, 7); // continuing streak, cap at 7
+        } else {
+            streak = 1; // missed a day or first time
+        }
+
+        prefs.edit()
+                .putString("last_brush_date", today)
+                .putInt("brush_streak", streak)
+                .apply();
     }
 
     // -----------------------------------------------------------------------

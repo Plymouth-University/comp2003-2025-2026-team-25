@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,23 +24,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Title sits BELOW the buttons row -->
+
     <ImageButton
         android:id="@+id/comfort_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.16"
-        app:layout_constraintDimensionRatio="1:1"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/solid_blue_rounded"
-        android:padding="8dp"
+        android:layout_width="133dp"
+        android:layout_height="102dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="How are you feeling?"
+        android:padding="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/happy_face"
-        android:contentDescription="How are you feeling?"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.1" />
 
-    <!-- Title sits BELOW the buttons row -->
     <TextView
         android:id="@+id/what_to_expect_label"
         android:layout_width="0dp"

@@ -32,8 +32,7 @@ public class DailyBrushActivity extends BaseActivity {
         ImageButton goBackButton = findViewById(R.id.go_back_button);
         if (goBackButton != null) goBackButton.setOnClickListener(v -> finish());
 
-        updateStreak();
-        renderStars();
+        renderStars(); // just display current streak, don't modify it
     }
 
     /**

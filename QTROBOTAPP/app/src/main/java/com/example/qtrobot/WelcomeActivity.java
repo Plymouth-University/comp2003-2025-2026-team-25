@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.gms.common.SignInButton;
+import android.widget.Button;
 
 // Database tools import
 import com.example.qtrobot.data.repository.DataRepository;
@@ -35,7 +35,7 @@ public class WelcomeActivity extends BaseActivity {
         });
 
         // Google Login choice
-        SignInButton googleBtn = findViewById(R.id.googleSignInButton);
+        Button googleBtn = findViewById(R.id.googleSignInButton);
         googleBtn.setOnClickListener(v -> {
             startActivity(new Intent(WelcomeActivity.this, GoogleSignInActivity.class));
         });
@@ -48,8 +48,9 @@ public class WelcomeActivity extends BaseActivity {
                         .edit()
                         .putBoolean("is_guest", true)
                         .apply();
-                // Navigate to Home Activity
-                Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
+                // Navigate to child profile setup first
+                Intent intent = new Intent(WelcomeActivity.this, NewProfileActivity.class);
+                intent.putExtra(NewProfileActivity.PARENT_ID_KEY, -1L);
                 startActivity(intent);
                 finish();
             });

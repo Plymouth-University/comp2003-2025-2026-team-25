@@ -57,18 +57,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/email_text"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/email_input"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/edit_text_background"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#757575"
+                android:tag="no_tint" />
 
             <TextView
                 android:id="@+id/password_label"
@@ -76,8 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/password_text"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -88,11 +91,14 @@
                 <EditText
                     android:id="@+id/password_input"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="60dp"
                     android:background="@drawable/edit_text_background"
                     android:inputType="textPassword"
                     android:paddingStart="16dp"
-                    android:paddingEnd="60dp" />
+                    android:paddingEnd="60dp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#757575"
+                    android:tag="no_tint" />
 
                 <ImageButton
                     android:id="@+id/password_toggle"
@@ -103,37 +109,64 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="12dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/passwordvistoggle" />
+                    android:src="@drawable/passwordvistoggle"
+                    android:tag="no_tint" />
 
             </RelativeLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="@android:color/white"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#FFFFFF"
                 android:text="@string/login"
-                android:textColor="?attr/qtPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:tag="no_tint"
+                app:cornerRadius="12dp"
+                app:strokeWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/already_have_account_button"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="?attr/qtContainer"
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#FFFFFF"
                 android:text="@string/dont_have_account"
-                android:textColor="?attr/qtPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:tag="no_tint"
+                app:cornerRadius="12dp"
+                app:strokeWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
-            <com.google.android.gms.common.SignInButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/googleSignInButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:layout_height="60dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:text="Sign in with Google"
+                android:textAllCaps="false"
+                android:textColor="#757575"
+                android:textSize="16sp"
+                android:tag="no_tint"
+                app:cornerRadius="12dp"
+                app:icon="@mipmap/ic_google_logo"
+                app:iconGravity="textStart"
+                app:iconSize="24dp"
+                app:iconPadding="8dp"
+                app:iconTint="@null"
+                app:strokeColor="#DADCE0"
+                app:strokeWidth="1dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
         </LinearLayout>
 

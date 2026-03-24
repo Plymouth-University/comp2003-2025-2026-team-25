@@ -96,6 +96,11 @@ public class GoogleSignInActivity extends BaseActivity {
             SignInButton googleSignInButton = findViewById(R.id.googleSignInButton);
             statusText = findViewById(R.id.statusText);
 
+            android.widget.ImageView logoImage = findViewById(R.id.logo);
+            if (logoImage != null && ThemePrefs.isPinkTheme(this)) {
+                logoImage.setImageResource(R.drawable.qtlogo_pink);
+            }
+
             if (googleSignInButton != null) {
                 googleSignInButton.setSize(SignInButton.SIZE_WIDE);
                 googleSignInButton.setOnClickListener(v -> signIn());
