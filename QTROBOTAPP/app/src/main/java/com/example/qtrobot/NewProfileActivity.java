@@ -21,7 +21,14 @@ import java.util.Locale;
 public class NewProfileActivity extends BaseActivity {
 
     private EditText childNameInput;
+<<<<<<< HEAD
     private EditText childDobInput;
+=======
+    //private EditText childDobInput;
+    private Button continueButton;
+
+    // DataRepository and Parent ID
+>>>>>>> welcome-feature-backup
     private DataRepository dataRepository;
     private long parentId;
     public static final String PARENT_ID_KEY = "PARENT_ID";
@@ -39,9 +46,17 @@ public class NewProfileActivity extends BaseActivity {
         }
         // parentId == -1 is allowed for guest users — only set FK for real accounts
 
+<<<<<<< HEAD
         dataRepository = new DataRepository(getApplication());
         childNameInput = findViewById(R.id.child_name_input);
         childDobInput  = findViewById(R.id.child_dob_input);
+=======
+        // Initialize repository and views
+        dataRepository = DataRepository.getInstance(getApplication());
+        childNameInput = findViewById(R.id.child_name_input);
+//        childDobInput = findViewById(R.id.child_dob_input);
+        continueButton = findViewById(R.id.continue_button);
+>>>>>>> welcome-feature-backup
 
         ImageView robotImage = findViewById(R.id.qtrobot_image);
         RobotImageHelper.applyRobot(robotImage, this);
@@ -70,11 +85,17 @@ public class NewProfileActivity extends BaseActivity {
         }
     }
 
+<<<<<<< HEAD
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         int year  = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day   = calendar.get(Calendar.DAY_OF_MONTH);
+=======
+        private void registerChildProfile() {
+            String childName = childNameInput.getText().toString().trim();
+//            String childDob = childDobInput.getText().toString().trim();
+>>>>>>> welcome-feature-backup
 
         DatePickerDialog dialog = new DatePickerDialog(this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
@@ -85,6 +106,7 @@ public class NewProfileActivity extends BaseActivity {
                 },
                 year, month, day);
 
+<<<<<<< HEAD
         // Children — cap the max date at today
         dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         dialog.show();
@@ -103,6 +125,12 @@ public class NewProfileActivity extends BaseActivity {
         newChild.preferredName = childName;
         newChild.dateOfBirth   = childDob;
         if (this.parentId != -1) {
+=======
+            // --- Create the ChildProfile Entity ---
+            ChildProfile newChild = new ChildProfile();
+            newChild.preferredName = childName;
+//            newChild.dateOfBirth = childDob;
+>>>>>>> welcome-feature-backup
             newChild.parentId = this.parentId;
         }
         newChild.isDirty       = true;
@@ -117,6 +145,7 @@ public class NewProfileActivity extends BaseActivity {
             // Mark that this parent now has a child profile
             new SessionManager(this).setHasChildProfile(true);
 
+<<<<<<< HEAD
             runOnUiThread(() -> {
                 Toast.makeText(this, "Profile created!", Toast.LENGTH_SHORT).show();
                 Intent homeIntent = new Intent(NewProfileActivity.this, HomeActivity.class);
@@ -124,5 +153,16 @@ public class NewProfileActivity extends BaseActivity {
                 startActivity(homeIntent);
             });
         });
+=======
+            // Goes to home screen
+            Toast.makeText(this, "Child's Profile created!", Toast.LENGTH_SHORT).show();
+            String authType = getIntent().getStringExtra("auth_type");
+            if ("email".equals(authType)) {
+                startActivity(new Intent(this, MainActivity.class)); // it is email user, go to login
+            } else {
+                startActivity(new Intent(this, HomeActivity.class)); // it is google user, go to home page
+            }
+            finishAffinity(); // to finish this and the previous registration activity
+>>>>>>> welcome-feature-backup
     }
 }

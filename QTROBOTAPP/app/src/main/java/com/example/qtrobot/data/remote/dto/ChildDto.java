@@ -9,7 +9,7 @@ public class ChildDto {
     public String childId;
     public String parentId;
     public String preferred_name;
-    public String date_of_birth;
+    // public String date_of_birth;
     public String avatar_uri;
     public int score;
     public String settings_favourite_song;

@@ -203,6 +203,7 @@ public class GoogleSignInActivity extends BaseActivity {
         });
     }
 
+<<<<<<< HEAD
     /**
      * Upserts the Google-authenticated user as a ParentAccount in Room,
      * then persists the local Row ID via SessionManager so every other
@@ -263,7 +264,48 @@ public class GoogleSignInActivity extends BaseActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+=======
+//    private void navigateToHome(GoogleSignInAccount account) {
+//        if (account != null && !isFinishing()) {
+//            Intent intent = new Intent(this, HomeActivity.class);
+//            intent.putExtra("user_name", account.getDisplayName());
+//            intent.putExtra("user_email", account.getEmail());
+//            intent.putExtra("auth_type", "google");
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
+
+    private void navigateToHome(GoogleSignInAccount account) {
+        if (account == null || isFinishing()) return;
+
+        // saves google user to Room DB as a ParentAccount
+        ParentAccount parent = new ParentAccount();
+        parent.firstName = account.getGivenName();   // first name from Google
+        parent.lastName = account.getFamilyName();  // last name from Google
+        parent.email = account.getEmail();
+        parent.createdAt = System.currentTimeMillis();
+        parent.updatedAt = System.currentTimeMillis();
+        parent.isDirty = true;
+
+        // Set as logged-in user
+        getSharedPreferences("user_prefs", MODE_PRIVATE)
+                .edit()
+                .putBoolean("is_guest", false)
+                .apply();
+
+        // Save to Room DB then navigate to HomeActivity
+        Toast.makeText(this, "Welcome back, " + parent.firstName + "!", Toast.LENGTH_SHORT).show();
+        DataRepository.getInstance(getApplication())
+                .insertParent(parent, newParentId -> {
+                    Intent intent = new Intent(this, NewProfileActivity.class);
+                    intent.putExtra(NewProfileActivity.PARENT_ID_KEY, newParentId);
+                    startActivity(intent);
+                    finish();
+                });
+>>>>>>> welcome-feature-backup
     }
+
 
     public interface ApiService {
         @POST("/auth/exchange-google-token")

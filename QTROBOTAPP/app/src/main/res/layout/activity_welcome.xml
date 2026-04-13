@@ -22,14 +22,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" /> <!-- Adjusted for more space -->
+        app:layout_constraintGuide_percent="0.2" /> <!-- Wider margins for tablet -->
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.8" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/welcome_card"
@@ -47,52 +47,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"> <!-- Reduced padding for more button space -->
+            android:padding="42dp">
 
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_email_login"
+                style="@style/Widget.QTrobot.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:backgroundTint="@android:color/white"
-                android:text="Sign in with Email"
+                android:text="Email Sign/Regiser"
                 android:textAllCaps="false"
                 android:textColor="?attr/qtPrimary"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:tag="no_tint"
-                app:cornerRadius="15dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                android:textSize="20sp"
 
+                 />
 
+            <!--Used frame layout so that google button looks similar to others in style-->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/googleSignInButton"
+                style="@style/Widget.QTrobot.Button.Google"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@android:color/white"
                 android:text="Sign in with Google"
                 android:textAllCaps="false"
-                android:textColor="#757575"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:tag="no_tint"
-                app:cornerRadius="15dp"
-                app:icon="@mipmap/ic_google_logo"
-                app:iconGravity="textStart"
-                app:iconSize="28dp"
+                app:icon="@drawable/ic_google_logo"
                 app:iconPadding="12dp"
+                app:iconGravity="textStart"
+                app:iconSize="24dp"
                 app:iconTint="@null"
-                app:strokeColor="#DADCE0"
                 app:strokeWidth="1dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:padding="0dp" />
-
+                app:strokeColor="#DADCE0"
+                app:backgroundTint="@android:color/white" />
             <!-- Guest -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_try_app"
+                style="@style/Widget.QTrobot.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="16dp"
@@ -100,12 +92,9 @@
                 android:text="Try the App"
                 android:textAllCaps="false"
                 android:textColor="?attr/qtPrimary"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:tag="no_tint"
-                app:cornerRadius="15dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                 />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

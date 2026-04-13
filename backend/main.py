@@ -33,10 +33,24 @@ KEYCLOAK_PUBLIC_URL = os.getenv("KEYCLOAK_PUBLIC_URL", KEYCLOAK_SERVER_URL)
 
 # Google OAuth client ID used by the Android app (for ID token validation)
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+# Optional: allow multiple client IDs (comma-separated) to support both
+# "web client ID" and "android client ID" audiences depending on how Google
+# Sign-In is configured in the Android app.
+GOOGLE_CLIENT_IDS = [
+    item.strip()
+    for item in (os.getenv("GOOGLE_CLIENT_IDS") or "").split(",")
+    if item.strip()
+]
 
 # Secret used to mint short-lived app tokens when exchanging Google ID tokens.
 # This lets the backend accept either a Keycloak JWT or an internal app JWT.
 APP_JWT_SECRET = os.getenv("APP_JWT_SECRET")
+
+# Redirect URI used for Keycloak authorization-code login redirects.
+# This must be listed in Keycloak client's "Valid redirect URIs".
+KEYCLOAK_REDIRECT_URI = os.getenv(
+    "KEYCLOAK_REDIRECT_URI", "http://localhost:8000/auth/callback"
+)
 
 
 # --- FastAPI Security and App Initialization ---
@@ -188,8 +202,9 @@ except Exception as e:
     print(f"❌ Failed to fetch client secret: {e}")
     # Fallback to environment variable if automatic fetch fails
     KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
-    if not KEYCLOAK_CLIENT_SECRET:
-        raise RuntimeError("Could not obtain KEYCLOAK_CLIENT_SECRET. Please check your configuration.")
+    # Do not crash the service if the client isn't created yet; most endpoints
+    # only need JWKS to verify tokens. Endpoints that require the client secret
+    # (e.g. authorization-code token exchange) will fail with a clear error.
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict:
@@ -285,6 +300,7 @@ def build_keycloak_auth_url(idp_hint: str | None = None) -> str:
         "client_id": KEYCLOAK_CLIENT_ID,
         "response_type": "code",
         "scope": "openid email profile",
+        "redirect_uri": KEYCLOAK_REDIRECT_URI,
     }
     if idp_hint:
         params["kc_idp_hint"] = idp_hint
@@ -315,6 +331,65 @@ async def login_with_google():
     return RedirectResponse(build_keycloak_auth_url(idp_hint="google"))
 
 
+@app.get("/auth/callback")
+def auth_callback(code: str | None = None, error: str | None = None, error_description: str | None = None):
+    """
+    OAuth2 authorization-code redirect target for local/dev testing.
+
+    This exchanges the `code` for tokens using the Keycloak token endpoint and
+    returns them as JSON so you can copy/paste `access_token` into Swagger or
+    Postman.
+    """
+    if error:
+        return {
+            "status": "error",
+            "error": error,
+            "error_description": error_description,
+        }
+    if not code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing authorization code.",
+        )
+
+    if not KEYCLOAK_CLIENT_ID:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="KEYCLOAK_CLIENT_ID is not configured on the server.",
+        )
+    if not KEYCLOAK_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="KEYCLOAK_CLIENT_SECRET is not configured on the server.",
+        )
+
+    token_url = f"{KEYCLOAK_SERVER_URL}realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
+    try:
+        resp = requests.post(
+            token_url,
+            data={
+                "grant_type": "authorization_code",
+                "client_id": KEYCLOAK_CLIENT_ID,
+                "client_secret": KEYCLOAK_CLIENT_SECRET,
+                "redirect_uri": KEYCLOAK_REDIRECT_URI,
+                "code": code,
+            },
+            timeout=10,
+        )
+    except requests.RequestException as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to contact Keycloak token endpoint: {exc}",
+        ) from exc
+
+    if resp.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Token exchange failed (status {resp.status_code}): {resp.text}",
+        )
+    return resp.json()
+
+
 class GoogleTokenExchange(BaseModel):
     """Model for the Android app to exchange Google ID token for access token."""
     google_id_token: str
@@ -337,10 +412,10 @@ async def exchange_google_token(request: GoogleTokenExchange):
     Note: This does **not** create a user in Keycloak; instead, the backend's
     `get_current_user` can understand both Keycloak tokens and these app tokens.
     """
-    if not GOOGLE_CLIENT_ID:
+    if not GOOGLE_CLIENT_ID and not GOOGLE_CLIENT_IDS:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="GOOGLE_CLIENT_ID is not configured on the server.",
+            detail="GOOGLE_CLIENT_ID (or GOOGLE_CLIENT_IDS) is not configured on the server.",
         )
     if not APP_JWT_SECRET:
         raise HTTPException(
@@ -373,7 +448,11 @@ async def exchange_google_token(request: GoogleTokenExchange):
 
     tokeninfo = resp.json()
     aud = tokeninfo.get("aud")
-    if aud != GOOGLE_CLIENT_ID:
+    allowed_audiences = set(GOOGLE_CLIENT_IDS)
+    if GOOGLE_CLIENT_ID:
+        allowed_audiences.add(GOOGLE_CLIENT_ID)
+
+    if aud not in allowed_audiences:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Google ID token audience does not match this app.",

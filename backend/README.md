@@ -69,3 +69,12 @@ docker compose up -d
 
 To restart without changing the files
 docker compose restart backend
+
+
+Testing
+docker build -t qtrobot-backend:vtest .
+docker tag qtrobot-backend:vtest okyanusalbas/qtrobot-backend:vtest
+docker tag qtrobot-backend:vtest okyanusalbas/qtrobot-backend:vtest
+docker push okyanusalbas/qtrobot-backend:vtest
+docker push okyanusalbas/qtrobot-backend:vtest
+docker compose up -d keycloak backend

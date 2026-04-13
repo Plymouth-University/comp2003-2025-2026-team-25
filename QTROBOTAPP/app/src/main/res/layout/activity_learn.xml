@@ -1,139 +1,388 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/page_border_background">
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/page_border_background">
 
-    <ImageButton
-        android:id="@+id/go_back_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.13"
-        app:layout_constraintDimensionRatio="1:1"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/solid_blue_rounded"
-        android:contentDescription="@string/go_back_button"
-        android:padding="12dp"
-        android:scaleType="fitCenter"
-        app:tint="@android:color/white"
-        android:src="@drawable/go_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".LearnActivity">
 
-    <!-- Title sits BELOW the buttons row -->
+            <ImageButton
+                android:id="@+id/go_back_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/solid_blue_rounded"
+                android:contentDescription="@string/go_back_button"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                app:tint="@android:color/white"
+                android:src="@drawable/go_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/comfort_button"
-        android:layout_width="133dp"
-        android:layout_height="102dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="How are you feeling?"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/happy_face"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.1" />
+            <TextView
+                android:id="@+id/what_to_expect_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/what_to_expect"
+                android:textColor="?attr/qtPrimary"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/what_to_expect_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:text="@string/what_to_expect"
-        android:textColor="?attr/qtPrimary"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/go_back_button" />
 
-    <!-- Four buttons fill remaining space equally with gaps -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/arrival_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_pale_blue_black_border"
-        android:text="@string/learn_arrival"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:gravity="center"
-        android:minHeight="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/before_appt_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/what_to_expect_label"
-        app:layout_constraintVertical_chainStyle="spread" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/before_appt_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_pale_blue_black_border"
-        android:text="@string/learn_before_appt"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:gravity="center"
-        android:minHeight="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/during_appt_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrival_button" />
+            <TextView
+                android:id="@+id/tutorial_progress_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="0 of 4 videos completed"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@id/what_to_expect_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/during_appt_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_pale_blue_black_border"
-        android:text="@string/learn_during_appt"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:gravity="center"
-        android:minHeight="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/after_appt_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/before_appt_button" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_arrival"
+                style="@style/Widget.QTrobot.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tutorial_progress_label">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/after_appt_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/rounded_pale_blue_black_border"
-        android:text="@string/learn_after_appt"
-        android:textAllCaps="false"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:gravity="center"
-        android:minHeight="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/during_appt_button" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    <FrameLayout
+                        android:layout_width="96dp"
+                        android:layout_height="72dp">
+
+                        <ImageView
+                            android:id="@+id/img_arrival_thumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/qt_robot_arriving"
+                             />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_play_circle"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_ondemand_video_24"
+                            app:tint="@android:color/white" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_arrival"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="When You Arrive at the Dentist"
+                            android:textColor="#212121"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/subtitle_arrival"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#212121"
+                            android:text="Short video about what happens as soon as you walk through the door."
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/badge_arrival"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="?attr/qtPrimary"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_before_appointment"
+                style="@style/Widget.QTrobot.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_arrival">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <FrameLayout
+                        android:layout_width="96dp"
+                        android:layout_height="72dp">
+
+                        <ImageView
+                            android:id="@+id/img_before_appointment_thumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/qt_waiting_room"
+                            />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_play_circle"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_ondemand_video_24"
+                            app:tint="@android:color/white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_before_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Before Appointment"
+                            android:textColor="#212121"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/subtitle_before_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#212121"
+                            android:text="Getting Ready for Your Visit. Find out what you’ll do while you wait to see the dentist."
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/badge_before"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="?attr/qtPrimary"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_during_appointment"
+                style="@style/Widget.QTrobot.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_before_appointment">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <FrameLayout
+                        android:layout_width="96dp"
+                        android:layout_height="72dp">
+
+                        <ImageView
+                            android:id="@+id/img_during_appointment_thumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/qt_in_dentist_room"
+                            />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_play_circle"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_ondemand_video_24"
+                            app:tint="@android:color/white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_during_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="During Appointment"
+                            android:textColor="#212121"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/subtitle_during_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#212121"
+                            android:text="Meet your Robot and learn what the dentist do to check your teeth."
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/badge_during"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="?attr/qtPrimary"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_after_appointment"
+                style="@style/Widget.QTrobot.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="24dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_during_appointment">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <FrameLayout
+                        android:layout_width="96dp"
+                        android:layout_height="72dp">
+
+                        <ImageView
+                            android:id="@+id/img_after_appointment_thumb"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/qt_thanks"
+                            />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_play_circle"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_ondemand_video_24"
+                            app:tint="@android:color/white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_after_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="After Appointment: All Done and Going Home"
+                            android:textColor="#212121"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/subtitle_after_appointment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#212121"
+                            android:text="Learn what happens at the end and how to say goodbye."
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/badge_after"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:src="@drawable/ic_check_circle_24"
+                        app:tint="?attr/qtPrimary"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    <!-- puts Konfetti on top of the entire screen -->
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

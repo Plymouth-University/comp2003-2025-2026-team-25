@@ -6,6 +6,7 @@ package com.example.qtrobot.data.remote.dto;
 Retrofit needs a Java class that matches that outer shape*/
 
 import com.google.gson.annotations.SerializedName;
+// @SerializedName -> must match the name in the JSON response and AWS tables
 
 public class GetChildResponse {
     @SerializedName("child")

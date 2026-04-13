@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.QTrobot.Card" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardBackgroundColor">?attr/qtContainer</item>
+        <item name="cardElevation">8dp</item>
+    </style>
+</resources>

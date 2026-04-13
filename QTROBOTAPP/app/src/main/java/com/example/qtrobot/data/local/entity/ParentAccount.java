@@ -29,11 +29,6 @@ public class ParentAccount {
     @SerializedName("email")
     public String email;    //e.g., "alice.smith@example.com"
 
-    @SerializedName("date_of_birth")
-    @ColumnInfo(name = "date_of_birth")
-    public String dateOfBirth;      //e.g., "1986-01-01"
-
-
     @ColumnInfo(name = "password_token")
     public String passwordToken;   // NEVER store plain password. something like hashed password string.
 

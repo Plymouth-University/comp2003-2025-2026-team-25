@@ -42,9 +42,9 @@ public class ChildProfile {
     @ColumnInfo(name = "preferred_name")
     public String preferredName;    // e.g., Alex
 
-    @SerializedName("date_of_birth")
-    @ColumnInfo(name = "date_of_birth")
-    public String dateOfBirth;      //e.g. "2020-03-15"
+//    @SerializedName("date_of_birth")
+//    @ColumnInfo(name = "date_of_birth")
+//    public String dateOfBirth;      //e.g. "2020-03-15"
 
     @SerializedName("avatar_uri")
     @ColumnInfo(name = "avatar_uri")  // uri = link to the resource
