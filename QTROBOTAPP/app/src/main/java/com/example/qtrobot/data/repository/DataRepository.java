@@ -29,6 +29,7 @@ import retrofit2.Callback;
 // Repository manages all data and operation, and the only class that should talk to DAOs.
 // Defines where the app data comes from (local or network)
 public class DataRepository {
+    private static volatile DataRepository INSTANCE;
 
     // SECTION 1: the tools Repository "assistant" has
 
@@ -51,6 +52,17 @@ public class DataRepository {
         this.backendApi = RetrofitClient.getInstance(application).getBackendApi();
         // This runs once when the app starts.
         // The Repository picks up its tools: Room DAO and Retrofit API.
+    }
+
+    public static DataRepository getInstance(Application application) {
+        if (INSTANCE == null) {
+            synchronized (DataRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DataRepository(application);
+                }
+            }
+        }
+        return INSTANCE;
     }
 
 
@@ -92,11 +104,26 @@ public class DataRepository {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             if(parentAccount!=null)
             {
-                //Clear existing profiles data
-                parentAccountDao.deleteAllParents();
+                if (parentAccount.email != null) {
+                    parentAccount.email = parentAccount.email.trim().toLowerCase(java.util.Locale.ROOT);
+                }
 
-                //Insert new user
-                long newParentId = parentAccountDao.insertParent(parentAccount);
+                ParentAccount existing = parentAccount.email == null
+                        ? null
+                        : parentAccountDao.getParentByEmail(parentAccount.email);
+                long newParentId;
+                if (existing != null) {
+                    existing.firstName = parentAccount.firstName;
+                    existing.lastName = parentAccount.lastName;
+                    existing.passwordToken = parentAccount.passwordToken;
+                    existing.updatedAt = System.currentTimeMillis();
+                    existing.isDirty = parentAccount.isDirty;
+                    parentAccountDao.updateParentAccount(existing);
+                    newParentId = existing.id;
+                } else {
+                    // Insert new user without clearing other local accounts
+                    newParentId = parentAccountDao.insertParent(parentAccount);
+                }
                 new Handler(Looper.getMainLooper()).post(() -> {
                     callback.onParentIdReceived(newParentId);
                 });
@@ -115,6 +142,25 @@ public class DataRepository {
         });
     }
 
+    public void loginParent(String email, String password, OnLoginCallback callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            String normalizedEmail = email == null ? "" : email.trim().toLowerCase(java.util.Locale.ROOT);
+            ParentAccount parent = parentAccountDao.getParentByEmail(normalizedEmail);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (parent == null) {
+                    callback.onFailure("Account not found");
+                    return;
+                }
+                String savedPassword = parent.passwordToken == null ? "" : parent.passwordToken;
+                if (!savedPassword.equals(password)) {
+                    callback.onFailure("Invalid email or password");
+                    return;
+                }
+                callback.onSuccess(parent);
+            });
+        });
+    }
+
     // --- ChildProfile Methods ---
 
     // INSERT child to Room (offline)
@@ -124,22 +170,43 @@ public class DataRepository {
         );
     }
 
-    // INSERT child to Room (offline)
+    /** Inserts a new child without removing existing siblings. */
     public void insertChild(final ChildProfile childProfile) {
-        // Using existing executor from our AppDatabase class
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            if(childProfile!=null)
-            {
-                // delete previous data profile
-                childProfileDao.deleteAllChildren();
-                // insert a new child
+            if (childProfile != null) {
                 childProfileDao.insertChild(childProfile);
+            } else {
+                Log.e("DataRepository", "childProfile is null");
             }
-            else {
-                Log.e("DataRepository","childProfile is null");
-            }
-
         });
+    }
+
+    /** Inserts a child and returns the new row id on the main thread. */
+    public void insertChildAndNotify(final ChildProfile childProfile, OnChildRowIdCallback callback) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            if (childProfile == null) {
+                Log.e("DataRepository", "insertChildAndNotify: childProfile is null");
+                return;
+            }
+            long rowId = childProfileDao.insertChild(childProfile);
+            new Handler(Looper.getMainLooper()).post(() -> callback.onRowId(rowId));
+        });
+    }
+
+    public interface OnChildRowIdCallback {
+        void onRowId(long rowId);
+    }
+
+    public LiveData<ChildProfile> getChildByLocalId(long childId) {
+        return childProfileDao.getChildById(childId);
+    }
+
+    public LiveData<java.util.List<ChildProfile>> getChildrenForParent(long parentId) {
+        return childProfileDao.getChildrenForParent(parentId);
+    }
+
+    public LiveData<java.util.List<ChildProfile>> getChildrenForGuest() {
+        return childProfileDao.getChildrenForGuest();
     }
 
     //READ/get child from Room (offline)
@@ -168,7 +235,6 @@ public class DataRepository {
                    childProfile.remoteId = childDto.childId;
                    childProfile.parentRemoteId = childDto.parentId;
                    childProfile.preferredName = childDto.preferred_name;
-                   childProfile.dateOfBirth = childDto.date_of_birth;
                    childProfile.avatarUri = childDto.avatar_uri;
                    childProfile.score = childDto.score;
                    childProfile.settingsFavouriteSong  = childDto.settings_favourite_song;
@@ -205,7 +271,6 @@ public class DataRepository {
         ChildDto dto = new ChildDto();
         dto.childId = child.remoteId;
         dto.preferred_name = child.preferredName;
-        dto.date_of_birth = child.dateOfBirth;
         dto.avatar_uri = child.avatarUri;
         dto.score = child.score;
         dto.settings_favourite_song = child.settingsFavouriteSong;

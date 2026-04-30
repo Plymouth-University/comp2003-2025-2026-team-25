@@ -17,12 +17,8 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qtrobot.data.LearnSectionConstants;
-import com.example.qtrobot.data.local.database.AppRoomDatabase;
-import com.example.qtrobot.data.local.entity.LearnProgress;
-import com.example.qtrobot.data.repository.DataRepository;
 import com.example.qtrobot.ui.viewmodel.ChildViewModel;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import nl.dionsegijn.konfetti.core.Party;
@@ -70,47 +66,28 @@ public class LearnActivity extends BaseActivity {
             goBackButton.setOnClickListener(v -> finish());
         }
 
-<<<<<<< HEAD
-        ImageButton comfortButton = findViewById(R.id.comfort_button);
-        if (comfortButton != null) {
-            comfortButton.setOnClickListener(v ->
-                    startActivity(new Intent(this, ComfortActivity.class)));
-        }
-
-        findViewById(R.id.arrival_button).setOnClickListener(v -> {
-=======
         // --- Check if user is a guest ---
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
         isGuest = prefs.getBoolean("is_guest", true);
 
-        // --- If logged in, get child ID and load their saved progress ---
-        if (!isGuest) {
-            childViewModel = new ViewModelProvider(this).get(ChildViewModel.class);
+        childViewModel = new ViewModelProvider(this).get(ChildViewModel.class);
+        SessionManager sessionManager = new SessionManager(this);
+        long selectedId = sessionManager.getSelectedChildId();
+        if (selectedId >= 0) {
+            childViewModel.getChildByLocalId(selectedId).observe(this, child -> {
+                if (child == null) return;
+                currentChildId = child.id;
+            });
+        } else {
             childViewModel.getChildFromRoom().observe(this, child -> {
                 if (child == null) return;
                 currentChildId = child.id;
-
-                // Load completed sections from Room on a background thread
-                AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-                    List<LearnProgress> completedList =
-                            DataRepository.getInstance(getApplication())
-                                    .getCompletedSectionsList(currentChildId);
-
-                    // Update the UI back on the main thread
-                    runOnUiThread(() -> {
-                        for (LearnProgress p : completedList) {
-                            showBadge(p.sectionId);
-                        }
-                        updateProgressLabel();
-                    });
-                });
             });
         }
 
         // --- Card click listeners ---
         cardArrival.setOnClickListener(v -> {
             pendingSectionId = LearnSectionConstants.SECTION_ARRIVAL;
->>>>>>> welcome-feature-backup
             startActivity(new Intent(this, ArrivalActivity.class));
         });
 
@@ -136,7 +113,7 @@ public class LearnActivity extends BaseActivity {
 
         if (pendingSectionId != null) {
             if (!isGuest && currentChildId != -1) {
-                childViewModel.recordSectionProgress(currentChildId, pendingSectionId);
+                // Persisting progress in Room can be added here when a method exists.
             }
             showBadge(pendingSectionId);
             pendingSectionId = null;

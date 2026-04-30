@@ -11,11 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.qtrobot.data.local.entity.ParentAccount;
 import com.example.qtrobot.data.repository.DataRepository;
-import com.example.qtrobot.ui.viewmodel.ParentViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -109,7 +105,7 @@ public class SettingsActivity extends BaseActivity {
         Button addChildProfileButton = findViewById(R.id.add_child_profile_button);
         if (addChildProfileButton != null) {
             addChildProfileButton.setOnClickListener(v -> {
-                Intent intent = new Intent(SettingsActivity.this, NewProfileActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, ChildSelectionActivity.class);
                 startActivity(intent);
             });
         }
@@ -119,17 +115,9 @@ public class SettingsActivity extends BaseActivity {
         // Clear Guest flag
         getSharedPreferences("user_prefs", MODE_PRIVATE).edit().clear().apply();
 
-<<<<<<< HEAD
         // Clear the Room Database user data
         DataRepository repository = new DataRepository(getApplication());
         repository.clearAllLocalData();
-=======
-        // Clear the Room Database user data using Parent Account viewmodel
-        ParentViewModel parentViewModel = new ViewModelProvider(this).get(ParentViewModel.class);
-
-        parentViewModel.logout();
-
->>>>>>> welcome-feature-backup
 
         // Clear our session and reset the Retrofit client
         new SessionManager(this).clearSession();

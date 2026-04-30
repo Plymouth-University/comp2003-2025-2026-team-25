@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")
     testImplementation(libs.junit)
@@ -57,18 +58,12 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
-<<<<<<< HEAD
-    implementation("androidx.lifecycle:lifecycle-livedata:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
-=======
     // Lifecycle & LiveData
-    val lifecycleVersion = "2.10.0"
-    implementation("androidx.lifecycle:lifecycle-livedata-core:2.8.7")
+    val lifecycleVersion = "2.8.7"
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel:${lifecycleVersion}")
-// LiveData
+    // LiveData
     implementation("androidx.lifecycle:lifecycle-livedata:${lifecycleVersion}")
->>>>>>> welcome-feature-backup
 
     // ZXing for QR Code generation
     implementation(libs.zxing)

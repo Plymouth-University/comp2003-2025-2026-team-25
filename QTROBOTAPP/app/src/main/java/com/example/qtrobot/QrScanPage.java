@@ -12,15 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-<<<<<<< HEAD
 import com.example.qtrobot.data.local.database.AppDatabase;
 import com.example.qtrobot.data.local.entity.ChildProfile;
-=======
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.qtrobot.qrcode.QrGenerator;
-import com.example.qtrobot.ui.viewmodel.ChildViewModel;
->>>>>>> welcome-feature-backup
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -54,11 +47,6 @@ public class QrScanPage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan_page);
 
-<<<<<<< HEAD
-=======
-
-        // Apply robot image theme
->>>>>>> welcome-feature-backup
         ImageView robotImage = findViewById(R.id.qtrobot_image);
         RobotImageHelper.applyRobot(robotImage, this);
 
@@ -75,7 +63,6 @@ public class QrScanPage extends BaseActivity {
         }
     }
 
-<<<<<<< HEAD
     private void generateQrLocally() {
         showMessage("Generating your QR code...");
         if (generateButton != null) generateButton.setVisibility(View.GONE);
@@ -93,9 +80,15 @@ public class QrScanPage extends BaseActivity {
                 userId = "guest";
             }
 
-            // Read child from local DB
-            ChildProfile child = AppDatabase.getInstance(this)
-                    .childProfileDao().getFirstChildSync();
+            long selectedId = session.getSelectedChildId();
+            ChildProfile child;
+            if (selectedId >= 0) {
+                child = AppDatabase.getInstance(this)
+                        .childProfileDao().getChildByIdSync(selectedId);
+            } else {
+                child = AppDatabase.getInstance(this)
+                        .childProfileDao().getFirstChildSync();
+            }
 
             String childName = (child != null && child.preferredName != null)
                     ? child.preferredName : "";
@@ -104,8 +97,10 @@ public class QrScanPage extends BaseActivity {
             String mood = (child != null && child.settingsPreferredGreeting != null)
                     ? child.settingsPreferredGreeting : "";
 
-            // Payload format: userId|childName|mood
-            String payload = userId + "|" + childName + "|" + mood;
+            String childLocalKey = (child != null) ? String.valueOf(child.id) : "";
+            String childUser = (child != null && child.childUsername != null) ? child.childUsername : "";
+            // Payload: userId|childName|mood|localChildId|childUsername
+            String payload = userId + "|" + childName + "|" + mood + "|" + childLocalKey + "|" + childUser;
             Log.d(TAG, "QR payload: " + payload);
 
             String encrypted = encryptAes(payload);
@@ -151,29 +146,6 @@ public class QrScanPage extends BaseActivity {
         if (timerTextView != null)         timerTextView.setVisibility(View.VISIBLE);
         startTimer();
     }
-=======
-//        // Generate and display QR
-//        String userUuid = getOrCreateUuid();
-//        Bitmap qrBitmap = generateQrCode(userUuid);
-//        if (qrBitmap != null) {
-//            qrCodeImageView.setImageBitmap(qrBitmap);
-//        }
-
-        //startTimer();
-
-        String qrString =
-                "f9f694f2-a217-48ac-b984-f527a7e530f7:5b01bdb74ca1775649572c26668c744224fc94633394c3b39d02edbfd0a35cb6";
-        QrGenerator generator = new QrGenerator();
-        try {
-            Bitmap qrBitmap = generator.generateQRCodeImage(qrString);
-            if (qrBitmap != null) {
-                qrCodeImageView.setImageBitmap(qrBitmap);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
->>>>>>> welcome-feature-backup
 
     private void showMessage(String message) {
         if (qrCodeImageView != null) qrCodeImageView.setAlpha(0.15f);

@@ -31,6 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
+import java.util.Locale;
+
 public class GoogleSignInActivity extends BaseActivity {
 
     private static final String TAG = "GoogleSignInActivity";
@@ -116,9 +118,9 @@ public class GoogleSignInActivity extends BaseActivity {
 
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-            // If we already have an active session, skip straight to Home
+            // If we already have an active session, resolve child flow (home / picker / new profile)
             if (sessionManager.isLoggedIn()) {
-                navigateToHome();
+                navigateAfterSessionReady(false);
                 return;
             }
 
@@ -140,10 +142,8 @@ public class GoogleSignInActivity extends BaseActivity {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
 
         if (mGoogleSignInClient != null) {
-            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                signInLauncher.launch(signInIntent);
-            });
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            signInLauncher.launch(signInIntent);
         }
     }
 
@@ -203,7 +203,6 @@ public class GoogleSignInActivity extends BaseActivity {
         });
     }
 
-<<<<<<< HEAD
     /**
      * Upserts the Google-authenticated user as a ParentAccount in Room,
      * then persists the local Row ID via SessionManager so every other
@@ -211,7 +210,7 @@ public class GoogleSignInActivity extends BaseActivity {
      */
     private void restoreOrCreateSession(GoogleSignInAccount account, String accessToken) {
         if (account == null) {
-            navigateToHome();
+            navigateAfterSessionReady(false);
             return;
         }
 
@@ -231,7 +230,7 @@ public class GoogleSignInActivity extends BaseActivity {
         ParentAccount parent = new ParentAccount();
         parent.firstName     = firstName;
         parent.lastName      = lastName;
-        parent.email         = account.getEmail();
+        parent.email         = account.getEmail() == null ? null : account.getEmail().trim().toLowerCase(Locale.ROOT);
         parent.passwordToken = null;
         parent.createdAt     = System.currentTimeMillis();
         parent.updatedAt     = System.currentTimeMillis();
@@ -240,70 +239,20 @@ public class GoogleSignInActivity extends BaseActivity {
         final String finalAccessToken = accessToken;
 
         dataRepository.upsertGoogleParent(parent, parentLocalId -> {
-            sessionManager.saveSession(parentLocalId, displayName, account.getEmail(), finalAccessToken);
+            String normalizedEmail = account.getEmail() == null ? "" : account.getEmail().trim().toLowerCase(Locale.ROOT);
+            sessionManager.saveSession(parentLocalId, displayName, normalizedEmail, finalAccessToken);
             Log.d(TAG, "Session saved — parentLocalId=" + parentLocalId);
-            navigateToHome();
+            navigateAfterSessionReady(false);
         });
     }
 
-    /**
-     * Navigate after login.
-     * First-time users (no child profile yet) go to NewProfileActivity.
-     * Returning users go straight to HomeActivity.
-     */
-    private void navigateToHome() {
+    /** After login, always route to child selection to choose/add a child profile. */
+    private void navigateAfterSessionReady(boolean isGuest) {
         if (isFinishing()) return;
-        SessionManager session = new SessionManager(this);
-        Intent intent;
-        if (!session.hasChildProfile()) {
-            // First login — send to child profile setup
-            intent = new Intent(this, NewProfileActivity.class);
-        } else {
-            intent = new Intent(this, HomeActivity.class);
-        }
+        Intent intent = new Intent(GoogleSignInActivity.this, ChildSelectionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-=======
-//    private void navigateToHome(GoogleSignInAccount account) {
-//        if (account != null && !isFinishing()) {
-//            Intent intent = new Intent(this, HomeActivity.class);
-//            intent.putExtra("user_name", account.getDisplayName());
-//            intent.putExtra("user_email", account.getEmail());
-//            intent.putExtra("auth_type", "google");
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
-
-    private void navigateToHome(GoogleSignInAccount account) {
-        if (account == null || isFinishing()) return;
-
-        // saves google user to Room DB as a ParentAccount
-        ParentAccount parent = new ParentAccount();
-        parent.firstName = account.getGivenName();   // first name from Google
-        parent.lastName = account.getFamilyName();  // last name from Google
-        parent.email = account.getEmail();
-        parent.createdAt = System.currentTimeMillis();
-        parent.updatedAt = System.currentTimeMillis();
-        parent.isDirty = true;
-
-        // Set as logged-in user
-        getSharedPreferences("user_prefs", MODE_PRIVATE)
-                .edit()
-                .putBoolean("is_guest", false)
-                .apply();
-
-        // Save to Room DB then navigate to HomeActivity
-        Toast.makeText(this, "Welcome back, " + parent.firstName + "!", Toast.LENGTH_SHORT).show();
-        DataRepository.getInstance(getApplication())
-                .insertParent(parent, newParentId -> {
-                    Intent intent = new Intent(this, NewProfileActivity.class);
-                    intent.putExtra(NewProfileActivity.PARENT_ID_KEY, newParentId);
-                    startActivity(intent);
-                    finish();
-                });
->>>>>>> welcome-feature-backup
     }
 
 

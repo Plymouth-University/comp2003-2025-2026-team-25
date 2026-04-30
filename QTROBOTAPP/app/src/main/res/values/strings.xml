@@ -54,5 +54,16 @@
     <string name="network_error">Network error</string>
 
     <!-- Google Sign-In: Use the WEB APPLICATION client ID here for backend verification -->
-    <string name="server_client_id">1061017147982-ee77krreqk0nor7tt8m6o8dc7l13lpu8.apps.googleusercontent.com </string>
+    <string name="server_client_id">22218075647-356a5vkjprhrvlt5f5a0hnbim57lgmqg.apps.googleusercontent.com</string>
+
+    <string name="child_selection_title">Who is playing today?</string>
+    <string name="child_selection_hint">Tap a child to continue. Each child has their own QR code for the robot.</string>
+    <string name="child_selection_empty">No child profiles yet. Tap + to add one.</string>
+    <string name="add_child">Add child</string>
+    <string name="child_no_username">No username set</string>
+    <string name="error_child_not_found">Child profile not found.</string>
+    <string name="child_selected">Selected %1$s</string>
+    <string name="child_username_label">Child username (unique)</string>
+    <string name="child_username_invalid">Use 3–24 letters, numbers, or underscores only.</string>
+    <string name="child_username_taken">That username is already taken.</string>
 </resources>

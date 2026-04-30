@@ -102,7 +102,7 @@ public class RegistrationActivity extends BaseActivity {
         // Get user input and use trim() to remove whitespace
         String firstName = firstNameInput.getText().toString().trim();
         String lastName = lastNameInput.getText().toString().trim();
-        String email = emailInput.getText().toString().trim();
+        String email = emailInput.getText().toString().trim().toLowerCase(java.util.Locale.ROOT);
 //        String dob = dobInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim(); // implement hash function later
 
@@ -130,11 +130,17 @@ public class RegistrationActivity extends BaseActivity {
             public void onParentIdReceived(long parentId) {
                 // This code runs AFTER the parent is inserted and we have the ID
                 Toast.makeText(RegistrationActivity.this, "Parent Registration Successful!", Toast.LENGTH_SHORT).show();
+                getSharedPreferences("user_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("is_guest", false)
+                        .apply();
+                SessionManager session = new SessionManager(RegistrationActivity.this);
+                String fullName = (firstName + " " + lastName).trim();
+                session.saveSession(parentId, fullName, email, null);
 
-                // Navigate to the NewProfileActivity to complete child's profile
-                Intent intent = new Intent(RegistrationActivity.this, NewProfileActivity.class);
-                intent.putExtra("PARENT_ID", parentId); // Pass the ID of parent to the child profile registration screen
-                intent.putExtra("auth_type", "email"); // to handle login screen later and avoid forwarding to google sign-in
+                // After auth, always choose/add child from selection screen
+                Intent intent = new Intent(RegistrationActivity.this, ChildSelectionActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
 
                 // finish the current activity

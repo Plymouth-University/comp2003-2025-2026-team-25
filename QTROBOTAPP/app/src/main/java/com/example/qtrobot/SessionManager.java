@@ -23,6 +23,7 @@ public class SessionManager {
     private static final String KEY_NAME       = "parent_name";
     private static final String KEY_EMAIL      = "parent_email";
     private static final String KEY_TOKEN      = "access_token";
+    private static final String KEY_SELECTED_CHILD_ID = "selected_child_id";
     private static final long   NO_SESSION     = -1L;
 
     private final SharedPreferences prefs;
@@ -54,6 +55,15 @@ public class SessionManager {
     /** Returns the backend JWT access token, or null. */
     public String getAccessToken() {
         return prefs.getString(KEY_TOKEN, null);
+    }
+
+    /** Local Room id of the child profile used for QR, greeting, and learn progress; -1 if none selected. */
+    public long getSelectedChildId() {
+        return prefs.getLong(KEY_SELECTED_CHILD_ID, NO_SESSION);
+    }
+
+    public void setSelectedChildId(long localChildId) {
+        prefs.edit().putLong(KEY_SELECTED_CHILD_ID, localChildId).apply();
     }
 
     /**

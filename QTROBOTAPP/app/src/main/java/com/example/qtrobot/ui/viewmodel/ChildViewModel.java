@@ -39,6 +39,13 @@ public class ChildViewModel extends AndroidViewModel {
         return repository.getLocalChild();
     }
 
+    public LiveData<ChildProfile> getChildByLocalId(long localId) {
+        if (localId < 0) {
+            return new MutableLiveData<>(null);
+        }
+        return repository.getChildByLocalId(localId);
+    }
+
     public void refresh(String remoteChildId) {
         repository.refreshChild(remoteChildId);
     }

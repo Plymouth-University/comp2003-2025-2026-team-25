@@ -16,7 +16,10 @@ import com.google.gson.annotations.SerializedName;
                 childColumns = "parent_id",
                 onDelete = ForeignKey.CASCADE
         ),
-        indices = {@Index("parent_id")}
+        indices = {
+                @Index("parent_id"),
+                @Index("child_username")
+        }
 )
 
 public class ChildProfile {
@@ -41,6 +44,10 @@ public class ChildProfile {
     @SerializedName("preferred_name")
     @ColumnInfo(name = "preferred_name")
     public String preferredName;    // e.g., Alex
+
+    /** Unique per parent (case-insensitive check in app / DAO). */
+    @ColumnInfo(name = "child_username")
+    public String childUsername;
 
 //    @SerializedName("date_of_birth")
 //    @ColumnInfo(name = "date_of_birth")

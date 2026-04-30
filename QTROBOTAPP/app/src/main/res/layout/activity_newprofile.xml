@@ -101,6 +101,27 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp" />
 
+            <TextView
+                android:id="@+id/child_username_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/child_username_label"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/child_username_input"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/edit_text_background"
+                android:hint="alex_smith"
+                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
 
             <Button
                 android:id="@+id/continue_button"

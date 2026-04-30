@@ -40,8 +40,10 @@ public class HomeActivity extends BaseActivity {
         if (greetingText != null) {
             ChildViewModel viewModel = new ViewModelProvider(this).get(ChildViewModel.class);
             LiveData<com.example.qtrobot.data.local.entity.ChildProfile> childLiveData;
-            if (isGuest) {
-                // Guest users have no parentId — just get first child from DB
+            long selectedId = session.getSelectedChildId();
+            if (selectedId >= 0) {
+                childLiveData = viewModel.getChildByLocalId(selectedId);
+            } else if (isGuest) {
                 childLiveData = viewModel.getChildFromRoom();
             } else {
                 viewModel.setParentId(session.getParentId());

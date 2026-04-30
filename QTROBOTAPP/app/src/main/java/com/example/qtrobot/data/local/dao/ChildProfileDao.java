@@ -49,9 +49,36 @@ public interface ChildProfileDao {
     @Query("SELECT * FROM child_profile WHERE parent_id = :parentId LIMIT 1")
     LiveData<ChildProfile> getChildByParentId(long parentId);
 
+    @Query("SELECT * FROM child_profile WHERE parent_id = :parentId ORDER BY created_at ASC")
+    LiveData<List<ChildProfile>> getChildrenForParent(long parentId);
+
+    @Query("SELECT COUNT(*) FROM child_profile WHERE parent_id = :parentId")
+    int countChildrenForParent(long parentId);
+
+    @Query("SELECT COUNT(*) FROM child_profile WHERE parent_id IS NULL")
+    int countChildrenForGuest();
+
+    @Query("SELECT * FROM child_profile WHERE parent_id = :parentId ORDER BY created_at ASC LIMIT 1")
+    ChildProfile getFirstChildForParentSync(long parentId);
+
+    @Query("SELECT * FROM child_profile WHERE parent_id IS NULL ORDER BY created_at ASC LIMIT 1")
+    ChildProfile getFirstGuestChildSync();
+
+    @Query("SELECT * FROM child_profile WHERE parent_id IS NULL ORDER BY created_at ASC")
+    LiveData<List<ChildProfile>> getChildrenForGuest();
+
+    @Query("SELECT COUNT(*) FROM child_profile WHERE parent_id = :parentId AND LOWER(child_username) = LOWER(:username)")
+    int countUsernameForParent(long parentId, String username);
+
+    @Query("SELECT COUNT(*) FROM child_profile WHERE parent_id IS NULL AND LOWER(child_username) = LOWER(:username)")
+    int countUsernameForGuest(String username);
+
+    @Query("SELECT * FROM child_profile WHERE id = :childId LIMIT 1")
+    ChildProfile getChildByIdSync(long childId);
+
     // insert new child profile (use when first time creating child)
     @Insert
-    void insertChild(ChildProfile childProfile);
+    long insertChild(ChildProfile childProfile);
 
     // use it when not sure if child exists in RoomDB (eg., to update from AWS)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
